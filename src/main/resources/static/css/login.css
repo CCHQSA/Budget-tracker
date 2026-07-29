@@ -1,0 +1,95 @@
+@import url('https://googleapis.com');
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%) no-repeat;
+    min-height: 100vh;
+    color: #111111;
+    margin: 0;
+    padding: 80px 24px;
+    letter-spacing: -0.01em;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+}
+
+.login-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #000000;
+    margin-top: 0;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.login-form input {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    color: #111111;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #000000;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.login-form input::placeholder {
+    color: #a0a0a0;
+}
+
+.btn-submit {
+    display: block;
+    width: 100%;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 14px 28px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+}
+
+.btn-submit:hover {
+    background-color: #222222;
+    transform: translateY(-1px);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}

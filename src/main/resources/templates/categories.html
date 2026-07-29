@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Categories</title>
+  <link rel="stylesheet" href="../static/css/categories-style.css" th:href="@{/css/categories-style.css}" />
+</head>
+
+<body>
+<div class="container">
+  <h2 class="main-header">All Categories</h2>
+  <div class="categories-list">
+
+    <div class="category-row" th:each="item : ${categories}">
+      <div class="category-info">
+        <span class="category-title" th:text="${item.name}">Name</span>
+        <span class="category-spent" th:text="${#numbers.formatDecimal(item.spent, 1, 2)} + ' ₴'">Spent</span>
+      </div>
+
+      <div class="btn-wrapper">
+        <a href="/view-category-expenses" th:href="@{/view-category-expenses(categoryId=${item.id})}" class="button">
+          View Category Expense
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

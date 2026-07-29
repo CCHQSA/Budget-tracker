@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%) no-repeat;
+    min-height: 100vh;
+    color: #111111;
+    margin: 0;
+    padding: 80px 24px;
+    letter-spacing: -0.01em;
+}
+
+.description,
+.reasons,
+.redirect {
+    max-width: 540px;
+    margin: 0 auto 24px auto;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.main-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #000000;
+    margin: 0;
+}
+
+.field-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #111111;
+}
+
+input[type="number"],
+input[type="month"] {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    background-color: #ffffff;
+}
+
+input:focus {
+    outline: none;
+    border-color: #000000;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 14px 28px;
+    margin: 0;
+    text-decoration: none;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button:hover {
+    background-color: #222222;
+    transform: translateY(-1px);
+}
+
+.button-secondary {
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid #e5e5e5;
+}
+
+.button-secondary:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: #000000;
+}
+
+.button-submit {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="month"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}

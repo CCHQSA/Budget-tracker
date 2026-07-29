@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Overview</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}" href="../static/css/home.css">
+</head>
+<body>
+
+<div class="description">
+  <h1 class="main-header">Welcome, <span th:text="${username}">Guest</span>!</h1>
+
+  <div class="reasons" th:if="${budget != null}">
+    <p><strong>Current Month:</strong> <span th:text="${currentMonth}">-</span></p>
+    <p><strong>Budget:</strong> <span th:text="${budget}">-</span></p>
+    <p><strong>Spent:</strong> <span th:text="${spent}">-</span></p>
+    <p><strong>Remaining:</strong> <span th:text="${remaining}">-</span></p>
+    <p><strong>Total Expenses:</strong> <span th:text="${totalExpenses}">-</span></p>
+  </div>
+
+  <div style="margin-top: 32px;" th:if="${budget != null}">
+    <a th:href="@{/expenses}" class="button">View Expenses</a>
+    <a th:href="@{/categories}" class="button">View Categories</a>
+  </div>
+
+  <div class="reasons" th:unless="${budget != null}" style="text-align: center; margin-top: 24px;">
+    <p>No active budget found for this month.</p>
+
+    <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
+      <a th:href="@{/budget/create}" class="button">Create New Budget</a>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

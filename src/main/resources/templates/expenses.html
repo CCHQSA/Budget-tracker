@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Expenses</title>
+  <link rel="stylesheet" th:href="@{/css/expenses.css}">
+</head>
+<body>
+<div class="container">
+  <h2 class="page-title">All Expenses</h2>
+
+  <div th:if="${budget.expenses == null or budget.expenses.isEmpty()}" class="empty-state">
+    <p>No expenses added yet. Start tracking your budget!</p>
+    <div class="btn-wrapper" style="justify-content:center">
+      <a th:href="@{/expenses/add}" class="btn">Create expense</a>
+    </div>
+  </div>
+
+  <div th:unless="${budget.expenses == null or budget.expenses.isEmpty()}">
+    <div class="expenses-list">
+      <div class="expense-row" th:each="expense : ${budget.expenses}">
+
+        <div class="expense-info">
+          <span class="expense-title" th:text="${expense.title}">Title</span>
+          <div class="expense-meta">
+            <span class="expense-category" th:text="${expense.category.name}">Category</span>
+            <span class="expense-date" th:text="${expense.date}">Date</span>
+          </div>
+        </div>
+
+        <div class="expense-amount-wrapper">
+          <span class="expense-amount" th:text="${expense.amount}">0.00</span>
+          <form th:action="@{/delete-expense}" method="post" class="delete-form">
+            <input type="hidden" name="expenseId" th:value="${expense.id}"/>
+            <button type="submit" class="btn-delete">Delete</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="btn-wrapper">
+      <a th:href="@{/expenses/add}" class="btn">Add expense</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

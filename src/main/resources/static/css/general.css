@@ -1,0 +1,85 @@
+@import url('https://googleapis.com');
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%) no-repeat;
+    min-height: 100vh;
+    color: #111111;
+    margin: 0;
+    padding: 80px 24px;
+    letter-spacing: -0.01em;
+}
+
+.description, .reasons, .redirect {
+    max-width: 540px;
+    margin: 0 auto 24px auto;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.main-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #000000;
+    margin-bottom: 32px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #000000;
+    margin-top: 48px;
+    margin-bottom: 24px;
+}
+
+.reasons p {
+    position: relative;
+    padding-left: 28px;
+    text-align: left;
+    margin: 16px 0;
+    font-size: 0.95rem;
+    color: #333333;
+}
+
+.reasons p::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #000000;
+    font-weight: 500;
+}
+
+.button {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    padding: 14px 28px;
+    margin: 8px;
+    text-decoration: none;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button:hover {
+    background-color: #222222;
+    transform: translateY(-1px);
+}
+
+.button:last-child {
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid #e5e5e5;
+}
+
+.button:last-child:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: #000000;
+}
