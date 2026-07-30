@@ -8,7 +8,11 @@
 
 <body>
 <div class="container">
-  <h2 class="main-header">All Categories</h2>
+  <div class="page-header">
+    <h2 class="main-header">All Categories</h2>
+    <a th:href="@{/home}" class="button button-secondary">Home</a>
+  </div>
+
   <div class="categories-list">
 
     <div class="category-row" th:each="item : ${categories}">
@@ -19,7 +23,7 @@
 
       <div class="btn-wrapper">
         <a href="/view-category-expenses" th:href="@{/view-category-expenses(categoryId=${item.id})}" class="button">
-          View Category Expense
+          View Expenses
         </a>
       </div>
     </div>

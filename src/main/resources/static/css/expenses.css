@@ -21,6 +21,14 @@ body {
 }
 
 .page-title {
+    margin: 0;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
     margin-bottom: 30px;
 }
 
@@ -95,10 +103,19 @@ body {
     border-radius: 6px;
 }
 
+.btn-secondary {
+    background: white;
+    color: black;
+    border: 1px solid #d0d0d0;
+}
+
 .empty-state {
     text-align: center;
 }
 
 .btn-wrapper {
     margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }

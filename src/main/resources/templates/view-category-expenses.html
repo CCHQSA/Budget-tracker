@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Category</title>
+  <title>Category Expenses</title>
+  <link rel="stylesheet" href="../static/css/view-category-expenses.css" th:href="@{/css/view-category-expenses.css}" />
 </head>
 <body>
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h2 class="main-header" th:text="${category.name}">Category</h2>
+      <p class="summary">
+        Total spent:
+        <strong th:text="${#numbers.formatDecimal(totalSpent, 1, 2)} + ' ₴'">0.00 ₴</strong>
+      </p>
+    </div>
+    <a th:href="@{/home}" class="button button-secondary">Home</a>
+  </div>
 
+  <div th:if="${category.expenses == null or category.expenses.isEmpty()}" class="empty-state">
+    <p>No expenses found for this category.</p>
+  </div>
+
+  <div th:unless="${category.expenses == null or category.expenses.isEmpty()}" class="expenses-list">
+    <div class="category-row" th:each="expense : ${category.expenses}">
+      <div class="category-info">
+        <div>
+          <span class="category-title" th:text="${expense.title}">Title</span>
+          <div class="expense-date" th:text="${expense.date}">Date</div>
+        </div>
+        <span class="category-spent" th:text="${#numbers.formatDecimal(expense.amount, 1, 2)} + ' ₴'">0.00 ₴</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-wrapper">
+    <a th:href="@{/categories}" class="button">Back to Categories</a>
+  </div>
+</div>
 </body>
 </html>

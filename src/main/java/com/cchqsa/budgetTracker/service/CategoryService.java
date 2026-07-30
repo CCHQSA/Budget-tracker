@@ -42,4 +42,8 @@ public class CategoryService {
     public List<Category> findByUserId(Long id) {
         return categoryRepository.findByUserId(id);
     }
+
+    public Optional<Category> findByIdAndUserId(Long categoryId, Long userId) {
+        return categoryRepository.findByIdAndUserId(categoryId, userId);
+    }
 }

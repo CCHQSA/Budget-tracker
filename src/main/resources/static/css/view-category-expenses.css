@@ -9,6 +9,13 @@ body {
     margin: 0;
     padding: 80px 24px;
     letter-spacing: -0.01em;
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
 }
 
 .container {
@@ -21,8 +28,21 @@ body {
     font-weight: 700;
     letter-spacing: -0.03em;
     color: #000000;
-    margin-bottom: 32px;
+    margin: 0;
     text-align: left;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.summary {
+    margin: 8px 0 0;
+    color: #555555;
 }
 
 .category-row {
@@ -44,9 +64,24 @@ body {
 }
 
 .category-title {
+    display: block;
     font-size: 1.15rem;
     font-weight: 600;
     color: #000000;
+}
+
+.expense-date {
+    color: #777777;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.empty-state {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
 }
 
 .category-spent {
@@ -56,7 +91,9 @@ body {
 }
 
 .btn-wrapper {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
 }
 
 .button {
@@ -74,4 +111,14 @@ body {
 .button:hover {
     background-color: #222222;
     transform: translateY(-1px);
+}
+
+.button-secondary {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    color: #111111;
+}
+
+.button-secondary:hover {
+    background-color: #f2f2f2;
 }

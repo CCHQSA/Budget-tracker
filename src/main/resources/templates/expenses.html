@@ -7,7 +7,10 @@
 </head>
 <body>
 <div class="container">
-  <h2 class="page-title">All Expenses</h2>
+  <div class="page-header">
+    <h2 class="page-title">All Expenses</h2>
+    <a th:href="@{/home}" class="btn btn-secondary">Home</a>
+  </div>
 
   <div th:if="${budget.expenses == null or budget.expenses.isEmpty()}" class="empty-state">
     <p>No expenses added yet. Start tracking your budget!</p>
@@ -41,6 +44,7 @@
 
     <div class="btn-wrapper">
       <a th:href="@{/expenses/add}" class="btn">Add expense</a>
+      <a th:href="@{/categories}" class="btn btn-secondary">View Categories</a>
     </div>
   </div>
 
