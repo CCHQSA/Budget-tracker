@@ -1,49 +1,104 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>General</title>
-  <link rel="stylesheet" th:href="@{/css/general.css}" href="../static/css/general.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Planner</title>
 
+  <link rel="stylesheet" th:href="@{/css/general.css}">
 </head>
 <body>
-  <div align="center"><h1 class="main-header">Welcome to Budget Planner!</h1></div>
-  <div align="center" class="description">
-    <header>
-      Budget Planner is a simple and secure application
-      that helps you take control
-      of your personal finances. Set monthly budgets,
-      organize your expenses
-      into categories, and monitor
-      your spending with ease.
-      Whether you're saving for a goal or simply tracking
-      daily expenses, Budget Planner gives you a clear
-      overview of your financial activity in one place.
-    </header>
-  </div>
 
-  <div align="center"><h2>Why Choose Budget Planner?</h2></div>
-  <div align="center" class="reasons">
-    <main>
-      <p>Secure authentication with JWT</p>
-      <p>Create and manage monthly budgets</p>
-      <p>Track your daily expenses</p>
-      <p>Organize expenses with custom categories</p>
-      <p>View your remaining budget and spending summary</p>
-      <p>Keep your financial data private and accessible only to you</p>
-    </main>
-  </div>
+<div class="container">
 
-  <div align="center" class="redirect">
-    <footer>
-      <p>Ready to get started?</p>
-      <p>Register a free account to begin managing your finances, or login in if you already have one. Budget Planner makes budgeting simple, organized, and secure.</p>
+  <section class="hero">
+
+    <h1>Budget Planner</h1>
+
+    <p>
+      Manage your money smarter, stay on top of your expenses,
+      and build better financial habits.
+    </p>
+
+    <div class="hero-buttons">
+      <a th:href="@{/register}" class="primary-btn">
+        Register
+      </a>
+
+      <a th:href="@{/login}" class="secondary-btn">
+        Login
+      </a>
+    </div>
+
+  </section>
+
+  <section class="cards">
+
+    <div class="card">
+
+      <h2>Simple Budgeting</h2>
+
       <p>
-        <a th:href="@{/register}" class="button">Register</a>
-        <a th:href="@{/login}" class="button">Login</a>
+        Create monthly budgets and keep your spending under control.
       </p>
-    </footer>
-  </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Track Expenses</h2>
+
+      <p>
+        Record every expense and always know where your money goes.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Categories</h2>
+
+      <p>
+        Organize expenses into categories for a better financial overview.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Financial Summary</h2>
+
+      <p>
+        View your remaining budget, spending statistics, and monthly progress.
+      </p>
+
+    </div>
+
+  </section>
+
+  <section class="features">
+
+    <h2>Why Choose Budget Planner?</h2>
+
+    <ul>
+
+      <li>Secure authentication</li>
+
+      <li>Create monthly budgets</li>
+
+      <li>Track daily expenses</li>
+
+      <li>Custom expense categories</li>
+
+      <li>Monitor remaining budget</li>
+
+      <li>Private personal financial data</li>
+
+    </ul>
+
+  </section>
+
+</div>
 
 </body>
 </html>

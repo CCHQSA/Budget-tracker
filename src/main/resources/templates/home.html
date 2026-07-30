@@ -3,35 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budget Overview</title>
-  <link rel="stylesheet" th:href="@{/css/home.css}" href="../static/css/home.css">
+  <title>Budget Dashboard</title>
+
+  <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
 
-<div class="description">
-  <h1 class="main-header">Welcome, <span th:text="${username}">Guest</span>!</h1>
+<div class="layout">
 
-  <div class="reasons" th:if="${budget != null}">
-    <p><strong>Current Month:</strong> <span th:text="${currentMonth}">-</span></p>
-    <p><strong>Budget:</strong> <span th:text="${budget}">-</span></p>
-    <p><strong>Spent:</strong> <span th:text="${spent}">-</span></p>
-    <p><strong>Remaining:</strong> <span th:text="${remaining}">-</span></p>
-    <p><strong>Total Expenses:</strong> <span th:text="${totalExpenses}">-</span></p>
-  </div>
+  <aside class="sidebar">
 
-  <div style="margin-top: 32px;" th:if="${budget != null}">
-    <a th:href="@{/expenses}" class="button">View Expenses</a>
-    <a th:href="@{/categories}" class="button">View Categories</a>
-  </div>
+    <div class="logo">
+      Budget Tracker
+    </div>
 
-  <div class="reasons" th:unless="${budget != null}" style="text-align: center; margin-top: 24px;">
-    <p>No active budget found for this month.</p>
+    <nav>
 
-    <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
-      <a th:href="@{/budget/create}" class="button">Create New Budget</a>
+      <a th:href="@{/home}" class="active">
+        Dashboard
+      </a>
+
+      <a th:href="@{/expenses}">
+        Expenses
+      </a>
+
+      <a th:href="@{/categories}">
+        Categories
+      </a>
+
+      <a th:href="@{/budgets}">
+        Budgets
+      </a>
+
+      <a th:href="@{/budget/create}">
+        New Budget
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <main class="content">
+
+    <div class="header">
+
+      <div>
+        <h1>
+          Welcome,
+          <span th:text="${username}">Guest</span>
+        </h1>
+
+        <p>Your monthly budget overview</p>
+      </div>
 
     </div>
-  </div>
+
+    <div th:if="${budget != null}">
+
+      <div class="cards">
+
+        <div class="card">
+          <h3>Current Month</h3>
+          <span th:text="${currentMonth}">July</span>
+        </div>
+
+        <div class="card budget">
+          <h3>Budget</h3>
+          <span>₴<span th:text="${budget}">0</span></span>
+        </div>
+
+        <div class="card spent">
+          <h3>Spent</h3>
+          <span>₴<span th:text="${spent}">0</span></span>
+        </div>
+
+        <div class="card remaining">
+          <h3>Remaining</h3>
+          <span>₴<span th:text="${remaining}">0</span></span>
+        </div>
+
+        <div class="card">
+          <h3>Total Expenses</h3>
+          <span th:text="${totalExpenses}">0</span>
+        </div>
+
+      </div>
+
+      <div class="progress-card">
+
+        <h2>Budget Usage</h2>
+
+        <div class="progress">
+
+          <div class="progress-fill"
+               th:style="'width:' + (${spent} * 100 / ${budget}) + '%'">
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+    <div class="empty" th:unless="${budget != null}">
+
+      <h2>No Budget Found</h2>
+
+      <p>Create a budget for the current month to start tracking expenses.</p>
+
+      <a th:href="@{/budget/create}" class="primary-btn">
+        Create Budget
+      </a>
+
+    </div>
+
+  </main>
 
 </div>
 

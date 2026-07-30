@@ -7,38 +7,33 @@
   <link rel="stylesheet" th:href="@{/css/create-budget.css}" href="../static/css/create-budget.css">
 </head>
 <body>
-
-<form th:action="@{/budget/create}" method="post">
-
-  <div class="description">
+<main class="container">
+  <div class="page-header">
     <h1 class="main-header">Create Budget</h1>
-    <p th:if="${error != null}" th:text="${error}" style="color: #b00020;"></p>
+    <a th:href="@{/home}" class="button button-secondary">Back to Home</a>
   </div>
 
-  <div class="reasons">
-    <label for="month" class="field-label">Select Month:</label>
-    <input
-            type="month"
-            id="month"
-            name="month"
-            th:value="${currentMonth != null ? currentMonth : #temporals.format(#temporals.createNow(), 'yyyy-MM')}"
-            required
-    >
-  </div>
+  <form th:action="@{/budget/create}" method="post" class="budget-form">
+    <p th:if="${error != null}" th:text="${error}" class="error-message"></p>
 
-  <div class="reasons">
-    <label for="amount" class="field-label">Monthly Budget Limit (₴):</label>
-    <input type="number" id="amount" name="amount" placeholder="2500" step="0.01" min="0" required>
-  </div>
-
-  <div class="redirect">
-    <div class="button-group">
-      <a th:href="@{/}" class="button button-secondary">Cancel</a>
-      <button type="submit" class="button button-submit">Create Budget</button>
+    <div class="form-group">
+      <label for="month" class="field-label">Month</label>
+      <input
+              type="month"
+              id="month"
+              name="month"
+              th:value="${currentMonth != null ? currentMonth : #temporals.format(#temporals.createNow(), 'yyyy-MM')}"
+              required
+      >
     </div>
-  </div>
 
-</form>
+    <div class="form-group">
+      <label for="amount" class="field-label">Monthly Budget Limit (UAH)</label>
+      <input type="number" id="amount" name="amount" placeholder="2500" step="0.01" min="0" required>
+    </div>
 
+    <button type="submit" class="button button-submit">Create Budget</button>
+  </form>
+</main>
 </body>
 </html>

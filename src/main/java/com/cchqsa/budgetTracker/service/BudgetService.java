@@ -56,4 +56,26 @@ public class BudgetService {
     public List<Expense> getAllExpenses() {
         return expenseRepository.getAllExpenses();
     }
+
+    public List<Budget> getBudgetsByUser(User user) {
+        return budgetRepository.getBudgetsByUser(user);
+    }
+
+    public void deleteBudgetByIdAndUser(Long budgetId, User user) {
+        List<Expense> expenses = budgetRepository.findBudgetExpenses(budgetId, user);
+        for (Expense expense : expenses) {
+            if(expense.getBudget().getUser().equals(user)) {
+                expenseRepository.deleteById(expense.getId());
+            }
+        }
+        budgetRepository.deleteByIdAndUser(budgetId, user);
+    }
+
+    public Optional<Budget> findByIdAndUser(Long budgetId, User user) {
+        return budgetRepository.findByIdAndUser(budgetId, user);
+    }
+
+    public List<Expense> findExpensesByIdAndUser(Long budgetId, User user) {
+        return budgetRepository.findBudgetExpenses(budgetId, user);
+    }
 }

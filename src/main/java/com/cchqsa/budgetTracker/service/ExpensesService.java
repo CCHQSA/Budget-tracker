@@ -28,4 +28,8 @@ public class ExpensesService {
     public long countByCategory(Category category) {
         return expenseRepository.countByCategory(category);
     }
+
+    public void deleteExpenseById(Long expenseId) {
+        expenseRepository.deleteById(expenseId);
+    }
 }

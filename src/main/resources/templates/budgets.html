@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Budgets</title>
+  <link th:href="@{/css/budgets.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="container">
+  <div class="page-header">
+    <h2 class="page-title">All Budgets</h2>
+    <a th:href="@{/home}" class="btn btn-secondary">Home</a>
+  </div>
+  <div class="expenses-list">
+    <div class="expense-row" th:each="budget : ${budgets}">
+      <div class="expense-info">
+        <span class="expense-title" th:text="${budget.month}">Budget month</span>
+      </div>
+      <div class="expense-amount-wrapper">
+        <span class="expense-amount" th:text="${budget.limitAmount}">Amount</span>
+
+        <a th:href="@{/budget-expenses(budgetId=${budget.id})}" class="btn btn-secondary">View expenses</a>
+
+        <form th:action="@{/delete-budget}" method="post" class="delete-form" style="margin: 0;">
+          <input type="hidden" name="budgetId" th:value="${budget.id}"/>
+          <button type="submit" class="btn-delete">Delete</button>
+        </form>
+      </div>
+
+    </div>
+    <div class="empty-state" th:if="${#lists.isEmpty(budgets)}">
+      <p>No budgets found. Create one to get started!</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,85 +1,181 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+* {
+    box-sizing: border-box;
+}
 
 body {
-    font-family: 'Inter', sans-serif;
-    line-height: 1.7;
-    background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%) no-repeat;
-    min-height: 100vh;
-    color: #111111;
     margin: 0;
-    padding: 80px 24px;
-    letter-spacing: -0.01em;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
 }
 
-.description, .reasons, .redirect {
-    max-width: 540px;
-    margin: 0 auto 24px auto;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-    padding: 32px;
-    border-radius: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+.layout {
+    display: flex;
+    min-height: 100vh;
 }
 
-.main-header {
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: #000000;
-    margin-bottom: 32px;
+.sidebar {
+    width: 230px;
+    padding: 24px;
+    background: #1f2937;
+    color: white;
 }
 
-h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: #000000;
-    margin-top: 48px;
-    margin-bottom: 24px;
+.logo {
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
-.reasons p {
-    position: relative;
-    padding-left: 28px;
-    text-align: left;
-    margin: 16px 0;
-    font-size: 0.95rem;
-    color: #333333;
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.reasons p::before {
-    content: "→";
-    position: absolute;
-    left: 0;
-    color: #000000;
-    font-weight: 500;
-}
-
-.button {
-    display: inline-block;
-    background-color: #000000;
-    color: #ffffff;
-    padding: 14px 28px;
-    margin: 8px 8px 8px 0;
+.sidebar a {
+    padding: 12px 14px;
+    border-radius: 6px;
+    color: #d1d5db;
     text-decoration: none;
-    border-radius: 9999px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.button:hover {
-    background-color: #222222;
-    transform: translateY(-1px);
+.sidebar a:hover,
+.sidebar a.active {
+    background: #2563eb;
+    color: white;
 }
 
-.button:last-child {
-    background-color: transparent;
-    color: #000000;
-    border: 1px solid #e5e5e5;
+.content {
+    flex: 1;
+    padding: 40px;
 }
 
-.button:last-child:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    border-color: #000000;
+.header {
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    margin: 0 0 8px;
+    font-size: 34px;
+}
+
+.header p {
+    margin: 0;
+    color: #666;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+}
+
+.card,
+.progress-card {
+    padding: 22px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+.card h3 {
+    margin: 0 0 12px;
+    color: #666;
+    font-size: 16px;
+}
+
+.card span {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.budget {
+    border-left: 5px solid #2563eb;
+}
+
+.spent {
+    border-left: 5px solid #dc2626;
+}
+
+.remaining {
+    border-left: 5px solid #16a34a;
+}
+
+.progress-card {
+    margin-top: 24px;
+}
+
+.progress-card h2 {
+    margin: 0 0 16px;
+}
+
+.progress {
+    height: 18px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2563eb;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.primary-btn,
+.secondary-btn {
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.primary-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.secondary-btn {
+    border: 1px solid #ccc;
+    background: white;
+    color: #222;
+}
+
+.empty {
+    padding: 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    text-align: center;
+}
+
+.empty h2 {
+    margin-top: 0;
+}
+
+@media (max-width: 800px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .content {
+        padding: 24px;
+    }
 }
