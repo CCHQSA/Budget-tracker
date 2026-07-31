@@ -18,8 +18,9 @@
       <a th:href="@{/home}" class="active">Dashboard</a>
       <a th:href="@{/expenses}">Expenses</a>
       <a th:href="@{/categories}">Categories</a>
-      <a th:href="@{/budgets}">Budgets</a>
+      <a th:href="@{/budgsts}">Budgets</a>
       <a th:href="@{/budget/create}">New Budget</a>
+      <a th:if="${role == 'ROLE_ADMIN'}" th:href="@{/admin-page}" class="admin-btn">Admin Panel</a>
     </nav>
   </aside>
 

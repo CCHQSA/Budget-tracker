@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -117,6 +118,7 @@ public class ExpenseController {
 
     @Transactional
     @PostMapping("/delete-expense")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public String deleteExpense(@AuthenticationPrincipal UserDetails userDetails,
                                 @RequestParam Long expenseId) {
         User user = userService.findByUsername(userDetails.getUsername()).get();
@@ -175,4 +177,26 @@ public class ExpenseController {
 
         return "redirect:/expenses";
     }
+
+    @GetMapping("user/budget/expenses")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String userBudgetForAdmin(@RequestParam("userId") Long userId,
+                                     @RequestParam("budgetId") Long budgetId,
+                                     @PageableDefault(size = 10, sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
+                                     Model model) {
+
+        User ownerUser = userService.findById(userId).get();
+
+        Budget budget = budgetService.findByIdAndUser(budgetId, ownerUser).get();
+
+        Page<Expense> expensePage = budgetService.findExpensesByIdAndUser(budgetId, ownerUser, pageable);
+
+        model.addAttribute("budget", budget);
+        model.addAttribute("expensePage", expensePage);
+        model.addAttribute("expenses", expensePage.getContent());
+        model.addAttribute("isAdminView", true);
+
+        return "expenses";
+    }
+
 }

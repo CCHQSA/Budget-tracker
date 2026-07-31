@@ -14,4 +14,8 @@ public interface UserService {
     JwtAuthenticationDto refreshToken(RefreshTokenDto refreshTokenDto) throws Exception;
     String addUser(UserDto userDto);
     Optional<User> findByUsername(String username);
+
+    List<User> getAll();
+
+    Optional<User> findById(Long userId);
 }

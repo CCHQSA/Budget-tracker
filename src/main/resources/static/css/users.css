@@ -1,0 +1,184 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 40px 16px;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    margin: 0;
+}
+
+.users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.user-row,
+.empty-state {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-left: 5px solid #2563eb;
+    border-radius: 8px;
+    background: white;
+}
+
+.user-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.user-title {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.user-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+.user-email {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.user-budgets-wrapper {
+    border-top: 1px solid #eee;
+    padding-top: 14px;
+}
+
+.no-budgets {
+    color: #9ca3af;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.budgets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.budget-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 14px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+.budget-details {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.budget-month {
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.budget-amount {
+    font-weight: bold;
+    color: #111827;
+}
+
+.budget-actions {
+    display: flex;
+    align-items: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: #2563eb;
+    color: white;
+    font: inherit;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    border: 1px solid #ccc;
+    background: white;
+    color: #222;
+}
+
+.btn-view {
+    display: inline-block;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 6px;
+    background: #d97706;
+    color: white;
+    font: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.empty-state {
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .budget-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .budget-details {
+        justify-content: space-between;
+    }
+
+    .btn-view {
+        width: 100%;
+    }
+}

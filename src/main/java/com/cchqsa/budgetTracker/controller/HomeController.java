@@ -61,6 +61,7 @@ public class HomeController {
                     budget.getLimitAmount().subtract(spent));
             model.addAttribute("totalExpenses",
                     budgetService.getTotalExpenses(budget));
+            model.addAttribute("role", user.getRole().name());
         });
 
         return "home";

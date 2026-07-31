@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Users Info</title>
+  <link rel="stylesheet" th:href="@{/css/users.css}">
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <h2 class="page-title">Users Info</h2>
+    <a th:href="@{/home}" class="btn btn-secondary">Home</a>
+  </div>
+
+  <div th:if="${#lists.isEmpty(users)}" class="empty-state">
+    <p>No registered users found in the system.</p>
+  </div>
+
+  <div th:unless="${#lists.isEmpty(users)}" class="users-list">
+    <div class="user-row" th:each="user : ${users}">
+
+      <div class="user-info">
+        <span class="user-title" th:text="${user.username}">Username</span>
+        <div class="user-meta">
+          <span class="user-email" th:text="${user.email}">user@example.com</span>
+        </div>
+      </div>
+
+      <div class="user-budgets-wrapper">
+        <div th:if="${#lists.isEmpty(user.budgets)}" class="no-budgets">
+          <span>No budgets assigned</span>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(user.budgets)}" class="budgets-list">
+          <div class="budget-item" th:each="budget : ${user.budgets}">
+
+            <div class="budget-details">
+              <span class="budget-month" th:text="${budget.getMonth()}">Month</span>
+              <span class="budget-amount" th:text="${budget.getLimitAmount()}">0.00</span>
+            </div>
+
+            <div class="budget-actions">
+              <input type="hidden" th:value="${budget.id}" name="budgetId">
+              <input type="hidden" th:value="${user.getId()}" name="userId">
+              <a th:href="@{/user/budget/expenses(userId=${user.id}, budgetId=${budget.id})}" class="btn-view">View Expenses</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

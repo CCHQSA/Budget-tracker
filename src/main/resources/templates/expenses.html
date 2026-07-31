@@ -9,13 +9,17 @@
 <body>
 <div class="container">
   <div class="page-header">
-    <h2 class="page-title">All Expenses</h2>
-    <a th:href="@{/home}" class="btn btn-secondary">Home</a>
+    <h2 class="page-title" th:if="${isAdminView}">User Expenses (Read Only)</h2>
+    <h2 class="page-title" th:unless="${isAdminView}">All Expenses</h2>
+
+    <a th:if="${isAdminView}" th:href="@{/admin-page}" class="btn btn-secondary">Back</a>
+    <a th:unless="${isAdminView}" th:href="@{/home}" class="btn btn-secondary">Back</a>
   </div>
 
   <div th:if="${#lists.isEmpty(expenses)}" class="empty-state">
-    <p>No expenses added yet. Start tracking your budget!</p>
-    <div class="btn-wrapper" style="justify-content:center">
+    <p>No expenses added yet.</p>
+
+    <div th:if="${isAdminView == null}" class="btn-wrapper" style="justify-content:center">
       <a th:href="@{/expenses/add}" class="btn">Create expense</a>
     </div>
   </div>
@@ -34,11 +38,14 @@
 
         <div class="expense-amount-wrapper">
           <span class="expense-amount" th:text="${expense.amount}">0.00</span>
-          <a th:href="@{/expenses/edit/{id}(id=${expense.id})}" class="btn-edit">Edit</a>
-          <form th:action="@{/delete-expense}" method="post" class="delete-form">
-            <input type="hidden" name="expenseId" th:value="${expense.id}"/>
-            <button type="submit" class="btn-delete">Delete</button>
-          </form>
+
+          <th:block th:if="${isAdminView == null}">
+            <a th:href="@{/expenses/edit/{id}(id=${expense.id})}" class="btn-edit">Edit</a>
+            <form th:action="@{/delete-expense}" method="post" class="delete-form">
+              <input type="hidden" name="expenseId" th:value="${expense.id}"/>
+              <button type="submit" class="btn-delete">Delete</button>
+            </form>
+          </th:block>
         </div>
 
       </div>
@@ -47,21 +54,24 @@
     <div class="pagination-container" th:if="${expensePage != null and expensePage.totalPages > 1}">
       <ul class="pagination">
         <li th:class="${expensePage.hasPrevious()} ? '' : 'disabled'">
-          <a th:href="@{/expenses(page=${expensePage.number - 1}, size=${expensePage.size})}">&laquo; Previous</a>
+          <a th:if="${isAdminView}" th:href="@{/user/budget/expenses(userId=${budget.user.id}, budgetId=${budget.id}, page=${expensePage.number - 1}, size=${expensePage.size})}">&laquo; Previous</a>
+          <a th:unless="${isAdminView}" th:href="@{/expenses(page=${expensePage.number - 1}, size=${expensePage.size})}">&laquo; Previous</a>
         </li>
 
         <li th:each="pageIdx : ${#numbers.sequence(0, expensePage.totalPages - 1)}"
             th:class="${pageIdx == expensePage.number} ? 'active' : ''">
-          <a th:href="@{/expenses(page=${pageIdx}, size=${expensePage.size})}" th:text="${pageIdx + 1}">1</a>
+          <a th:if="${isAdminView}" th:href="@{/user/budget/expenses(userId=${budget.user.id}, budgetId=${budget.id}, page=${pageIdx}, size=${expensePage.size})}" th:text="${pageIdx + 1}">1</a>
+          <a th:unless="${isAdminView}" th:href="@{/expenses(page=${pageIdx}, size=${expensePage.size})}" th:text="${pageIdx + 1}">1</a>
         </li>
 
         <li th:class="${expensePage.hasNext()} ? '' : 'disabled'">
-          <a th:href="@{/expenses(page=${expensePage.number + 1}, size=${expensePage.size})}">Next &raquo;</a>
+          <a th:if="${isAdminView}" th:href="@{/user/budget/expenses(userId=${budget.user.id}, budgetId=${budget.id}, page=${expensePage.number + 1}, size=${expensePage.size})}">Next &raquo;</a>
+          <a th:unless="${isAdminView}" th:href="@{/expenses(page=${expensePage.number + 1}, size=${expensePage.size})}">Next &raquo;</a>
         </li>
       </ul>
     </div>
 
-    <div class="btn-wrapper">
+    <div th:if="${isAdminView == null}" class="btn-wrapper">
       <a th:href="@{/expenses/add}" class="btn">Add expense</a>
       <a th:href="@{/categories}" class="btn btn-secondary">View Categories</a>
     </div>
