@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Budget Dashboard</title>
-
   <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
@@ -12,110 +11,64 @@
 <div class="layout">
 
   <aside class="sidebar">
-
-    <div class="logo">
-      Budget Tracker
-    </div>
-
+    <div class="logo">Budget Tracker</div>
     <nav>
-
-      <a th:href="@{/home}" class="active">
-        Dashboard
-      </a>
-
-      <a th:href="@{/expenses}">
-        Expenses
-      </a>
-
-      <a th:href="@{/categories}">
-        Categories
-      </a>
-
-      <a th:href="@{/budgets}">
-        Budgets
-      </a>
-
-      <a th:href="@{/budget/create}">
-        New Budget
-      </a>
-
+      <a th:href="@{/home}" class="active">Dashboard</a>
+      <a th:href="@{/expenses}">Expenses</a>
+      <a th:href="@{/categories}">Categories</a>
+      <a th:href="@{/budgets}">Budgets</a>
+      <a th:href="@{/budget/create}">New Budget</a>
     </nav>
-
   </aside>
 
   <main class="content">
 
     <div class="header">
-
       <div>
-        <h1>
-          Welcome,
-          <span th:text="${username}">Guest</span>
-        </h1>
-
+        <h1>Welcome, <span th:text="${username}">Guest</span></h1>
         <p>Your monthly budget overview</p>
       </div>
-
     </div>
 
     <div th:if="${budget != null}">
 
       <div class="cards">
-
         <div class="card">
           <h3>Current Month</h3>
           <span th:text="${currentMonth}">July</span>
         </div>
-
         <div class="card budget">
           <h3>Budget</h3>
           <span>₴<span th:text="${budget}">0</span></span>
         </div>
-
         <div class="card spent">
           <h3>Spent</h3>
           <span>₴<span th:text="${spent}">0</span></span>
         </div>
-
         <div class="card remaining">
           <h3>Remaining</h3>
           <span>₴<span th:text="${remaining}">0</span></span>
         </div>
-
         <div class="card">
           <h3>Total Expenses</h3>
           <span th:text="${totalExpenses}">0</span>
         </div>
-
       </div>
 
       <div class="progress-card">
-
         <h2>Budget Usage</h2>
-
         <div class="progress">
-
-          <div class="progress-fill"
-               th:style="'width:' + (${spent} * 100 / ${budget}) + '%'">
-          </div>
-
+          <div class="progress-fill" th:style="'width:' + (${spent} * 100 / ${budget}) + '%'"></div>
         </div>
 
       </div>
 
-
     </div>
 
     <div class="empty" th:unless="${budget != null}">
-
       <h2>No Budget Found</h2>
-
       <p>Create a budget for the current month to start tracking expenses.</p>
-
-      <a th:href="@{/budget/create}" class="primary-btn">
-        Create Budget
-      </a>
-
+      <a th:href="@{/budget/create}" class="primary-btn">Create Budget</a>
     </div>
 
   </main>

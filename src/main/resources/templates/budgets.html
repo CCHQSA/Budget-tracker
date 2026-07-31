@@ -19,6 +19,8 @@
       <div class="expense-amount-wrapper">
         <span class="expense-amount" th:text="${budget.limitAmount}">Amount</span>
 
+        <a th:href="@{/budget/edit(budgetId=${budget.id})}" class="btn btn-secondary edit-btn">Edit</a>
+
         <a th:href="@{/budget-expenses(budgetId=${budget.id})}" class="btn btn-secondary">View expenses</a>
 
         <form th:action="@{/delete-budget}" method="post" class="delete-form" style="margin: 0;">

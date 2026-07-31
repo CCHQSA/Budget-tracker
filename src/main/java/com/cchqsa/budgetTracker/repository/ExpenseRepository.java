@@ -3,6 +3,7 @@ package com.cchqsa.budgetTracker.repository;
 import com.cchqsa.budgetTracker.entity.Budget;
 import com.cchqsa.budgetTracker.entity.Category;
 import com.cchqsa.budgetTracker.entity.Expense;
+import com.cchqsa.budgetTracker.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -33,4 +34,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     long countByCategory(Category category);
 
+    Expense findByIdAndUser(Long id, User user);
 }

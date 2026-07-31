@@ -2,30 +2,42 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Budget Expenses</title>
   <link rel="stylesheet" th:href="@{/css/expenses.css}">
 </head>
 <body>
-<div id="budget-expenses">
-  <h1>Budget Expenses</h1>
-  <div class="expense-row" th:each="expense : ${expenses}" th:id="'expense-' + ${expense.id}">
-    <div class="expense-info">
-      <div class="expense-header">
-        <span class="expense-title" th:text="${expense.title}">Title</span>
+<div class="container" id="budget-expenses">
+
+  <div class="page-header">
+    <h2 class="page-title">Budget Expenses</h2>
+  </div>
+
+  <div class="expenses-list">
+    <div class="expense-row" th:each="expense : ${expenses}" th:id="'expense-' + ${expense.id}">
+
+      <div class="expense-info">
+        <div class="expense-header">
+          <span class="expense-title" th:text="${expense.title}">Title</span>
+        </div>
+        <div class="expense-meta">
+          <span class="expense-category" th:text="${expense.category.name}">Category</span>
+          <span class="expense-date" th:text="${#temporals.format(expense.date, 'dd.MM.yyyy')}">Date</span>
+        </div>
       </div>
-      <div class="expense-meta">
-        <span class="expense-category" th:text="${expense.category.name}">Category</span>
-        <span class="expense-date" th:text="${expense.date}">Date</span>
+
+      <div class="expense-amount-wrapper">
+        <span class="expense-amount" th:text="${#numbers.formatDecimal(expense.amount, 1, 'DEFAULT', 2, 'DEFAULT')}">0.00</span>
+        <a th:href="@{expenses-budget/edit/{id}(id=${expense.id})}" class="btn-edit">Edit</a>
+        <form th:action="@{/delete-expense-from-budget}" method="post" class="delete-form">
+          <input type="hidden" name="expenseId" th:value="${expense.id}"/>
+          <button type="submit" class="btn-delete">Delete</button>
+        </form>
       </div>
-    </div>
-    <div class="expense-amount-wrapper">
-      <span class="expense-amount" th:text="${expense.amount}">0.00</span>
-      <form th:action="@{/delete-expense-from-budget}" method="post" class="delete-form">
-        <input type="hidden" name="expenseId" th:value="${expense.id}"/>
-        <button type="submit" class="btn-delete">Delete</button>
-      </form>
+
     </div>
   </div>
+
 </div>
 </body>
 </html>

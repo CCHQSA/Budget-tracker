@@ -37,7 +37,11 @@ public class SecurityConfig {
                                 "/register",
                                 "/auth/**",
                                 "/css/**",
-                                "/js/**").permitAll().anyRequest().authenticated())
+                                "/js/**",
+                                "/favicon.ico",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**").permitAll().anyRequest().authenticated())
                 .exceptionHandling(exception ->
                        exception.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

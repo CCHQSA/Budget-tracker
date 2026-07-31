@@ -1,6 +1,8 @@
 package com.cchqsa.budgetTracker.service;
 
 import com.cchqsa.budgetTracker.entity.Category;
+import com.cchqsa.budgetTracker.entity.Expense;
+import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.repository.BudgetRepository;
 import com.cchqsa.budgetTracker.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
@@ -31,5 +33,13 @@ public class ExpensesService {
 
     public void deleteExpenseById(Long expenseId) {
         expenseRepository.deleteById(expenseId);
+    }
+
+    public Expense findByIdAndUser(Long id, User user) {
+        return expenseRepository.findByIdAndUser(id, user);
+    }
+
+    public void updateExpense(Expense expense) {
+        expenseRepository.save(expense);
     }
 }

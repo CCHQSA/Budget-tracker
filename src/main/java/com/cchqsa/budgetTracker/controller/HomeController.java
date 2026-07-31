@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
@@ -39,6 +40,7 @@ public class HomeController {
 
         budgetService.findBudget(user, currentMonth).ifPresent(budget -> {
             BigDecimal spent = budgetService.getSpent(budget);
+            model.addAttribute("budgetId", budget.getId());
             model.addAttribute("currentMonth", budget.getMonth());
             model.addAttribute("budget", budget.getLimitAmount());
             model.addAttribute("spent", spent);
@@ -48,4 +50,5 @@ public class HomeController {
 
         return "home";
     }
+
 }

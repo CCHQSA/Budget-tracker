@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -133,5 +134,32 @@ public class ExpenseController {
         List<Expense> expenses = budgetService.findExpensesByIdAndUser(budgetId, user);
         model.addAttribute("expenses", expenses);
         return "budget-expenses";
+    }
+
+    @GetMapping("/expenses/edit/{id}")
+    public String editExpense(@AuthenticationPrincipal UserDetails userDetails,
+                              @PathVariable Long id,
+                              Model model) {
+        User  user = userService.findByUsername(userDetails.getUsername()).get();
+        Expense expense = expensesService.findByIdAndUser(id, user);
+        model.addAttribute("expense", expense);
+        return "edit-expense";
+    }
+
+    @PostMapping("/expenses/edit/{id}")
+    public String saveEditedExpense(@AuthenticationPrincipal UserDetails userDetails,
+                                    @PathVariable Long id,
+                                    @RequestParam String title,
+                                    @RequestParam BigDecimal amount,
+                                    @RequestParam LocalDate date){
+        User  user = userService.findByUsername(userDetails.getUsername()).get();
+        Expense expense = expensesService.findByIdAndUser(id, user);
+        expense.setTitle(title);
+        expense.setAmount(amount);
+        expense.setDate(date);
+
+        expensesService.updateExpense(expense);
+
+        return "redirect:/expenses";
     }
 }

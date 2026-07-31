@@ -14,12 +14,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
@@ -103,8 +102,42 @@ public class BudgetController {
         return "redirect:/home";
     }
 
+    @GetMapping("/expenses-budget/edit/{id}")
+    public String editExpense(@AuthenticationPrincipal UserDetails userDetails,
+                              @PathVariable Long id,
+                              Model model) {
+        User user = userService.findByUsername(userDetails.getUsername()).get();
+
+        Expense expense = expensesService.findByIdAndUser(id, user);
+        model.addAttribute("expense", expense);
+        return "edit-expense";
+    }
+
+    @GetMapping("/budget/edit")
+    public String editBudget(@RequestParam("budgetId") Long id,
+                             @AuthenticationPrincipal UserDetails userDetails,
+                             Model model) {
+        User user = userService.findByUsername(userDetails.getUsername()).get();
+        Budget currBudget = budgetService.findByIdAndUser(id, user).get();
+
+        model.addAttribute("budget", currBudget);
+        model.addAttribute("currentMonth", currBudget.getMonth());
+
+        return "edit-budget";
+    }
 
 
+    @PostMapping("/budget/edit")
+    public String updateBudget(@AuthenticationPrincipal UserDetails userDetails,
+                               @RequestParam("amount") BigDecimal amount,
+                               @RequestParam("budgetId") Long id){
+        User  user = userService.findByUsername(userDetails.getUsername()).get();
+        Budget currBudget = budgetService.findByIdAndUser(id, user).get();
+        currBudget.setLimitAmount(amount);
+
+        budgetService.saveBudget(currBudget);
+        return "redirect:/budgets";
+    }
 
 
 }

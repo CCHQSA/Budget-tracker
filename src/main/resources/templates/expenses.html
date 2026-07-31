@@ -34,6 +34,7 @@
 
         <div class="expense-amount-wrapper">
           <span class="expense-amount" th:text="${expense.amount}">0.00</span>
+          <a th:href="@{/expenses/edit/{id}(id=${expense.id})}" class="btn-edit">Edit</a>
           <form th:action="@{/delete-expense}" method="post" class="delete-form">
             <input type="hidden" name="expenseId" th:value="${expense.id}"/>
             <button type="submit" class="btn-delete">Delete</button>
