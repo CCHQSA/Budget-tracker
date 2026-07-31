@@ -19,12 +19,12 @@
     <a th:href="@{/home}" class="button button-secondary">Home</a>
   </div>
 
-  <div th:if="${category.expenses == null or category.expenses.isEmpty()}" class="empty-state">
+  <div th:if="${#lists.isEmpty(expenses)}" class="empty-state">
     <p>No expenses found for this category.</p>
   </div>
 
-  <div th:unless="${category.expenses == null or category.expenses.isEmpty()}" class="expenses-list">
-    <div class="category-row" th:each="expense : ${category.expenses}">
+  <div th:unless="${#lists.isEmpty(expenses)}" class="expenses-list">
+    <div class="category-row" th:each="expense : ${expenses}">
       <div class="category-info">
         <div>
           <span class="category-title" th:text="${expense.title}">Title</span>

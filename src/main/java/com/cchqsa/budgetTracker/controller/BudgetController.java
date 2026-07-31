@@ -4,12 +4,15 @@ import com.cchqsa.budgetTracker.entity.Budget;
 import com.cchqsa.budgetTracker.entity.Category;
 import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
-import com.cchqsa.budgetTracker.repository.UserRepository;
 import com.cchqsa.budgetTracker.service.BudgetService;
 import com.cchqsa.budgetTracker.service.CategoryService;
 import com.cchqsa.budgetTracker.service.ExpensesService;
 import com.cchqsa.budgetTracker.service.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -18,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -29,7 +30,7 @@ public class BudgetController {
     private final UserService userService;
     private final BudgetService budgetService;
     private final CategoryService categoryService;
-    private final ExpensesService  expensesService;
+    private final ExpensesService expensesService;
 
     public BudgetController(UserService userService, BudgetService budgetService, CategoryService categoryService, ExpensesService expensesService) {
         this.userService = userService;
@@ -66,10 +67,18 @@ public class BudgetController {
 
     @GetMapping("/budgets")
     public String budgets(@AuthenticationPrincipal UserDetails userDetails,
+                          @PageableDefault(size = 10, sort = "month", direction = Sort.Direction.DESC) Pageable pageable,
                           Model model) {
-        User user = userService.findByUsername(userDetails.getUsername()).get();
-        List<Budget> budgets = budgetService.getBudgetsByUser(user);
-        model.addAttribute("budgets", budgets);
+        Optional<User> currentUser = userService.findByUsername(userDetails.getUsername());
+        if (currentUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = currentUser.get();
+        Page<Budget> budgetPage = budgetService.getBudgetsByUser(user, pageable);
+
+        model.addAttribute("budgetPage", budgetPage);
+        model.addAttribute("budgets", budgetPage.getContent());
         return "budgets";
     }
 
@@ -126,18 +135,15 @@ public class BudgetController {
         return "edit-budget";
     }
 
-
     @PostMapping("/budget/edit")
     public String updateBudget(@AuthenticationPrincipal UserDetails userDetails,
                                @RequestParam("amount") BigDecimal amount,
                                @RequestParam("budgetId") Long id){
-        User  user = userService.findByUsername(userDetails.getUsername()).get();
+        User user = userService.findByUsername(userDetails.getUsername()).get();
         Budget currBudget = budgetService.findByIdAndUser(id, user).get();
         currBudget.setLimitAmount(amount);
 
         budgetService.saveBudget(currBudget);
         return "redirect:/budgets";
     }
-
-
 }

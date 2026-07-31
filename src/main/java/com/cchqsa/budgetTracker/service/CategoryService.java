@@ -3,6 +3,8 @@ package com.cchqsa.budgetTracker.service;
 import com.cchqsa.budgetTracker.entity.Category;
 import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +18,6 @@ public class CategoryService {
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
-
-
 
     public Category save(Category newCategory) {
         return categoryRepository.save(newCategory);
@@ -41,6 +41,10 @@ public class CategoryService {
 
     public List<Category> findByUserId(Long id) {
         return categoryRepository.findByUserId(id);
+    }
+
+    public Page<Category> findByUserId(Long id, Pageable pageable) {
+        return categoryRepository.findByUserId(id, pageable);
     }
 
     public Optional<Category> findByIdAndUserId(Long categoryId, Long userId) {

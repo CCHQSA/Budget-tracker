@@ -7,6 +7,10 @@ import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.service.CategoryService;
 import com.cchqsa.budgetTracker.service.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -31,7 +35,9 @@ public class CategoryController {
 
     @Transactional
     @GetMapping("/categories")
-    public String viewCategories(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String viewCategories(@AuthenticationPrincipal UserDetails userDetails,
+                                 @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                                 Model model) {
         Optional<User> currentUser = userService.findByUsername(userDetails.getUsername());
         if (currentUser.isEmpty()) {
             return "redirect:/login";
@@ -39,19 +45,18 @@ public class CategoryController {
 
         User user = currentUser.get();
 
-        List<Category> userCategories = categoryService.findByUserId(user.getId());
+        Page<Category> userCategoriesPage = categoryService.findByUserId(user.getId(), pageable);
 
-        List<CategorySpentDto> categoriesWithSpent = userCategories.stream()
-                .map(category -> {
-                    BigDecimal totalSpent = category.getExpenses().stream()
-                            .map(Expense::getAmount)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        Page<CategorySpentDto> categoriesWithSpentPage = userCategoriesPage.map(category -> {
+            BigDecimal totalSpent = category.getExpenses().stream()
+                    .map(Expense::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                    return new CategorySpentDto(category.getId(), category.getName(), totalSpent);
-                })
-                .toList();
+            return new CategorySpentDto(category.getId(), category.getName(), totalSpent);
+        });
 
-        model.addAttribute("categories", categoriesWithSpent);
+        model.addAttribute("categoryPage", categoriesWithSpentPage);
+        model.addAttribute("categories", categoriesWithSpentPage.getContent());
         return "categories";
     }
 
@@ -70,11 +75,15 @@ public class CategoryController {
             return "redirect:/categories";
         }
 
-        BigDecimal totalSpent = category.get().getExpenses().stream()
+        Category currentCategory = category.get();
+        List<Expense> expenses = currentCategory.getExpenses();
+
+        BigDecimal totalSpent = expenses.stream()
                 .map(Expense::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        model.addAttribute("category", category.get());
+        model.addAttribute("category", currentCategory);
+        model.addAttribute("expenses", expenses);
         model.addAttribute("totalSpent", totalSpent);
         return "view-category-expenses";
     }

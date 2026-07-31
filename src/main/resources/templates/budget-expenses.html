@@ -11,30 +11,54 @@
 
   <div class="page-header">
     <h2 class="page-title">Budget Expenses</h2>
+    <a th:href="@{/budgets}" class="btn btn-secondary">Back to Budgets</a>
   </div>
 
-  <div class="expenses-list">
-    <div class="expense-row" th:each="expense : ${expenses}" th:id="'expense-' + ${expense.id}">
+  <div th:if="${#lists.isEmpty(expenses)}" class="empty-state">
+    <p>No expenses found for this budget.</p>
+  </div>
 
-      <div class="expense-info">
-        <div class="expense-header">
-          <span class="expense-title" th:text="${expense.title}">Title</span>
+  <div th:unless="${#lists.isEmpty(expenses)}">
+    <div class="expenses-list">
+      <div class="expense-row" th:each="expense : ${expenses}" th:id="'expense-' + ${expense.id}">
+
+        <div class="expense-info">
+          <div class="expense-header">
+            <span class="expense-title" th:text="${expense.title}">Title</span>
+          </div>
+          <div class="expense-meta">
+            <span class="expense-category" th:text="${expense.category.name}">Category</span>
+            <span class="expense-date" th:text="${#temporals.format(expense.date, 'dd.MM.yyyy')}">Date</span>
+          </div>
         </div>
-        <div class="expense-meta">
-          <span class="expense-category" th:text="${expense.category.name}">Category</span>
-          <span class="expense-date" th:text="${#temporals.format(expense.date, 'dd.MM.yyyy')}">Date</span>
+
+        <div class="expense-amount-wrapper">
+          <span class="expense-amount" th:text="${#numbers.formatDecimal(expense.amount, 1, 'DEFAULT', 2, 'DEFAULT')}">0.00</span>
+          <a th:href="@{/expenses-budget/edit/{id}(id=${expense.id})}" class="btn-edit">Edit</a>
+          <form th:action="@{/delete-expense-from-budget}" method="post" class="delete-form">
+            <input type="hidden" name="expenseId" th:value="${expense.id}"/>
+            <button type="submit" class="btn-delete">Delete</button>
+          </form>
         </div>
-      </div>
 
-      <div class="expense-amount-wrapper">
-        <span class="expense-amount" th:text="${#numbers.formatDecimal(expense.amount, 1, 'DEFAULT', 2, 'DEFAULT')}">0.00</span>
-        <a th:href="@{expenses-budget/edit/{id}(id=${expense.id})}" class="btn-edit">Edit</a>
-        <form th:action="@{/delete-expense-from-budget}" method="post" class="delete-form">
-          <input type="hidden" name="expenseId" th:value="${expense.id}"/>
-          <button type="submit" class="btn-delete">Delete</button>
-        </form>
       </div>
+    </div>
 
+    <div class="pagination-container" th:if="${expensePage != null and expensePage.totalPages > 1}">
+      <ul class="pagination">
+        <li th:class="${expensePage.hasPrevious()} ? '' : 'disabled'">
+          <a th:href="@{/budget-expenses(budgetId=${budgetId}, page=${expensePage.number - 1}, size=${expensePage.size})}">&laquo; Previous</a>
+        </li>
+
+        <li th:each="pageIdx : ${#numbers.sequence(0, expensePage.totalPages - 1)}"
+            th:class="${pageIdx == expensePage.number} ? 'active' : ''">
+          <a th:href="@{/budget-expenses(budgetId=${budgetId}, page=${pageIdx}, size=${expensePage.size})}" th:text="${pageIdx + 1}">1</a>
+        </li>
+
+        <li th:class="${expensePage.hasNext()} ? '' : 'disabled'">
+          <a th:href="@{/budget-expenses(budgetId=${budgetId}, page=${expensePage.number + 1}, size=${expensePage.size})}">Next &raquo;</a>
+        </li>
+      </ul>
     </div>
   </div>
 

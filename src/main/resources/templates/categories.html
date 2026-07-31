@@ -30,6 +30,23 @@
     </div>
 
   </div>
+
+  <div class="pagination-container" th:if="${categoryPage != null and categoryPage.totalPages > 1}">
+    <ul class="pagination">
+      <li th:class="${categoryPage.hasPrevious()} ? '' : 'disabled'">
+        <a th:href="@{/categories(page=${categoryPage.number - 1}, size=${categoryPage.size})}">&laquo; Previous</a>
+      </li>
+
+      <li th:each="pageIdx : ${#numbers.sequence(0, categoryPage.totalPages - 1)}"
+          th:class="${pageIdx == categoryPage.number} ? 'active' : ''">
+        <a th:href="@{/categories(page=${pageIdx}, size=${categoryPage.size})}" th:text="${pageIdx + 1}">1</a>
+      </li>
+
+      <li th:class="${categoryPage.hasNext()} ? '' : 'disabled'">
+        <a th:href="@{/categories(page=${categoryPage.number + 1}, size=${categoryPage.size})}">Next &raquo;</a>
+      </li>
+    </ul>
+  </div>
 </div>
 </body>
 </html>

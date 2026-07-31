@@ -35,6 +35,23 @@
     </div>
   </div>
 
+  <div class="pagination-container" th:if="${budgetPage != null and budgetPage.totalPages > 1}">
+    <ul class="pagination">
+      <li th:class="${budgetPage.hasPrevious()} ? '' : 'disabled'">
+        <a th:href="@{/budgets(page=${budgetPage.number - 1}, size=${budgetPage.size})}">&laquo; Previous</a>
+      </li>
+
+      <li th:each="pageIdx : ${#numbers.sequence(0, budgetPage.totalPages - 1)}"
+          th:class="${pageIdx == budgetPage.number} ? 'active' : ''">
+        <a th:href="@{/budgets(page=${pageIdx}, size=${budgetPage.size})}" th:text="${pageIdx + 1}">1</a>
+      </li>
+
+      <li th:class="${budgetPage.hasNext()} ? '' : 'disabled'">
+        <a th:href="@{/budgets(page=${budgetPage.number + 1}, size=${budgetPage.size})}">Next &raquo;</a>
+      </li>
+    </ul>
+  </div>
+
 </div>
 </body>
 </html>

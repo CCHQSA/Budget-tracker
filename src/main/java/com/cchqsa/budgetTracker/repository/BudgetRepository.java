@@ -3,6 +3,8 @@ package com.cchqsa.budgetTracker.repository;
 import com.cchqsa.budgetTracker.entity.Budget;
 import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +18,7 @@ import java.util.Optional;
 public interface BudgetRepository extends JpaRepository<Budget,Long> {
     Optional<Budget> findFirstByUserAndMonthOrderByIdDesc(User user, YearMonth month);
 
-    List<Budget> getBudgetsByUser(User user);
+    Page<Budget> getBudgetsByUser(User user, Pageable pageable);
 
     void deleteByIdAndUser(Long budgetId, User user);
 

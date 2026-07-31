@@ -9,6 +9,10 @@ import com.cchqsa.budgetTracker.service.CategoryService;
 import com.cchqsa.budgetTracker.service.ExpensesService;
 import com.cchqsa.budgetTracker.service.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -22,7 +26,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -42,19 +45,25 @@ public class ExpenseController {
     }
 
     @GetMapping("/expenses")
-    public String expenses(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String expenses(@AuthenticationPrincipal UserDetails userDetails,
+                           @PageableDefault(size = 10, sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
+                           Model model) {
         Optional<User> currentUser = userService.findByUsername(userDetails.getUsername());
         if (currentUser.isEmpty()) {
             return "redirect:/login";
         }
 
-        Budget budget = budgetService.findBudget(currentUser.get(), YearMonth.now())
-                .orElse(null);
+        User user = currentUser.get();
+        Budget budget = budgetService.findBudget(user, YearMonth.now()).orElse(null);
         if (budget == null) {
             return "redirect:/budget/create";
         }
 
+        Page<Expense> expensePage = expensesService.findByUser(user, pageable);
+
         model.addAttribute("budget", budget);
+        model.addAttribute("expensePage", expensePage);
+        model.addAttribute("expenses", expensePage.getContent());
         return "expenses";
     }
 
@@ -128,11 +137,15 @@ public class ExpenseController {
 
     @GetMapping("/budget-expenses")
     public String budgetExpense(@AuthenticationPrincipal UserDetails userDetails,
-                                Model model,
-                                @RequestParam Long budgetId) {
+                                @RequestParam Long budgetId,
+                                @PageableDefault(size = 10, sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
+                                Model model) {
         User user = userService.findByUsername(userDetails.getUsername()).get();
-        List<Expense> expenses = budgetService.findExpensesByIdAndUser(budgetId, user);
-        model.addAttribute("expenses", expenses);
+        Page<Expense> expensePage = budgetService.findExpensesByIdAndUser(budgetId, user, pageable);
+
+        model.addAttribute("budgetId", budgetId);
+        model.addAttribute("expensePage", expensePage);
+        model.addAttribute("expenses", expensePage.getContent());
         return "budget-expenses";
     }
 
@@ -140,7 +153,7 @@ public class ExpenseController {
     public String editExpense(@AuthenticationPrincipal UserDetails userDetails,
                               @PathVariable Long id,
                               Model model) {
-        User  user = userService.findByUsername(userDetails.getUsername()).get();
+        User user = userService.findByUsername(userDetails.getUsername()).get();
         Expense expense = expensesService.findByIdAndUser(id, user);
         model.addAttribute("expense", expense);
         return "edit-expense";
@@ -152,7 +165,7 @@ public class ExpenseController {
                                     @RequestParam String title,
                                     @RequestParam BigDecimal amount,
                                     @RequestParam LocalDate date){
-        User  user = userService.findByUsername(userDetails.getUsername()).get();
+        User user = userService.findByUsername(userDetails.getUsername()).get();
         Expense expense = expensesService.findByIdAndUser(id, user);
         expense.setTitle(title);
         expense.setAmount(amount);

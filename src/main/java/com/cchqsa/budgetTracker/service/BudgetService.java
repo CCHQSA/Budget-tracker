@@ -1,11 +1,12 @@
 package com.cchqsa.budgetTracker.service;
 
-
 import com.cchqsa.budgetTracker.entity.Budget;
 import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.repository.BudgetRepository;
 import com.cchqsa.budgetTracker.repository.ExpenseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -57,8 +58,8 @@ public class BudgetService {
         return expenseRepository.getAllExpenses();
     }
 
-    public List<Budget> getBudgetsByUser(User user) {
-        return budgetRepository.getBudgetsByUser(user);
+    public Page<Budget> getBudgetsByUser(User user, Pageable pageable) {
+        return budgetRepository.getBudgetsByUser(user, pageable);
     }
 
     public void deleteBudgetByIdAndUser(Long budgetId, User user) {
@@ -77,5 +78,9 @@ public class BudgetService {
 
     public List<Expense> findExpensesByIdAndUser(Long budgetId, User user) {
         return budgetRepository.findBudgetExpenses(budgetId, user);
+    }
+
+    public Page<Expense> findExpensesByIdAndUser(Long budgetId, User user, Pageable pageable) {
+        return expenseRepository.findBudgetExpensesPageable(budgetId, user, pageable);
     }
 }

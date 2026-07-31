@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Budget</title>
+  <link rel="stylesheet" href="/css/edit-budget.css" th:href="@{/css/edit-budget.css}"/>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Edit Budget Limit</h2>
+
+  <form th:action="@{/budget/edit(budgetId=${budget.id})}" method="post">
+
+    <input type="hidden" name="budgetId" th:value="${budget.id}"/>
+
+    <div class="form-group">
+      <label th:text="'Budget for: ' + ${currentMonth}">Month Name</label>
+    </div>
+
+    <div class="form-group">
+      <label for="amount">New Budget Amount (₴)</label>
+      <input type="number"
+             id="amount"
+             name="amount"
+             step="0.01"
+             th:value="${budget.getLimitAmount()}"
+             placeholder="0.00"
+             required />
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn-submit">Save Changes</button>
+      <a th:href="@{/home}" class="btn-cancel">Cancel</a>
+    </div>
+
+  </form>
+</div>
+
+</body>
+</html>

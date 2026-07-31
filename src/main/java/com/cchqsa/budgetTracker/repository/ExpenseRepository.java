@@ -5,6 +5,8 @@ import com.cchqsa.budgetTracker.entity.Category;
 import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,4 +37,11 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     long countByCategory(Category category);
 
     Expense findByIdAndUser(Long id, User user);
+
+    Page<Expense> findByUser(User user, Pageable pageable);
+
+    @Query("select e from Expense e where e.budget.id = :budgetId and e.user = :user")
+    Page<Expense> findBudgetExpensesPageable(@Param("budgetId") Long budgetId, @Param("user") User user, Pageable pageable);
+
+    List<Expense> findTop3ByUserOrderByIdDesc(User user);
 }

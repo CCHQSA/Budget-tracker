@@ -13,16 +13,16 @@
     <a th:href="@{/home}" class="btn btn-secondary">Home</a>
   </div>
 
-  <div th:if="${budget.expenses == null or budget.expenses.isEmpty()}" class="empty-state">
+  <div th:if="${#lists.isEmpty(expenses)}" class="empty-state">
     <p>No expenses added yet. Start tracking your budget!</p>
     <div class="btn-wrapper" style="justify-content:center">
       <a th:href="@{/expenses/add}" class="btn">Create expense</a>
     </div>
   </div>
 
-  <div th:unless="${budget.expenses == null or budget.expenses.isEmpty()}">
+  <div th:unless="${#lists.isEmpty(expenses)}">
     <div class="expenses-list">
-      <div class="expense-row" th:each="expense : ${budget.expenses}">
+      <div class="expense-row" th:each="expense : ${expenses}">
 
         <div class="expense-info">
           <span class="expense-title" th:text="${expense.title}">Title</span>
@@ -42,6 +42,23 @@
         </div>
 
       </div>
+    </div>
+
+    <div class="pagination-container" th:if="${expensePage != null and expensePage.totalPages > 1}">
+      <ul class="pagination">
+        <li th:class="${expensePage.hasPrevious()} ? '' : 'disabled'">
+          <a th:href="@{/expenses(page=${expensePage.number - 1}, size=${expensePage.size})}">&laquo; Previous</a>
+        </li>
+
+        <li th:each="pageIdx : ${#numbers.sequence(0, expensePage.totalPages - 1)}"
+            th:class="${pageIdx == expensePage.number} ? 'active' : ''">
+          <a th:href="@{/expenses(page=${pageIdx}, size=${expensePage.size})}" th:text="${pageIdx + 1}">1</a>
+        </li>
+
+        <li th:class="${expensePage.hasNext()} ? '' : 'disabled'">
+          <a th:href="@{/expenses(page=${expensePage.number + 1}, size=${expensePage.size})}">Next &raquo;</a>
+        </li>
+      </ul>
     </div>
 
     <div class="btn-wrapper">

@@ -2,6 +2,8 @@ package com.cchqsa.budgetTracker.repository;
 
 import com.cchqsa.budgetTracker.entity.Category;
 import com.cchqsa.budgetTracker.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findFirstByUserAndNameIgnoreCase(User user, String name);
 
     List<Category> findByUserId(Long userId);
+
+    Page<Category> findByUserId(Long userId, Pageable pageable);
 
     Optional<Category> findByIdAndUserId(Long id, Long userId);
 }
