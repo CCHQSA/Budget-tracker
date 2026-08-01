@@ -27,7 +27,10 @@
 
     <div class="form-group">
       <label for="category">Category</label>
-      <input type="text" id="category" th:field="*{category}" placeholder="Food" class="input-field" required>
+      <input type="text" id="category" th:field="*{category}" placeholder="Food" class="input-field" th:list="categories-list" required>
+      <datalist id="categories-list" th:each="category : ${categories}">
+        <option th:value="${category.name}"></option>
+      </datalist>
     </div>
 
     <button type="submit" class="btn-submit">Add Expense</button>

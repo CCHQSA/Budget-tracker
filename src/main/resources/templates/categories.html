@@ -4,46 +4,84 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Categories</title>
-  <link rel="stylesheet" href="../static/css/categories-style.css" th:href="@{/css/categories-style.css}" />
+  <link rel="stylesheet"
+        href="../static/css/categories-style.css"
+        th:href="@{/css/categories-style.css}">
 </head>
-
 <body>
 <div class="container">
   <div class="page-header">
     <h2 class="main-header">All Categories</h2>
-    <a th:href="@{/home}" class="button button-secondary">Home</a>
+
+    <form th:action="@{/categories}" method="get" class="search-form">
+      <input
+              type="text"
+              name="query"
+              class="search-input"
+              placeholder="Search categories..."
+              th:value="${query}">
+
+      <input type="hidden" name="sort" th:value="${param.sort}" th:if="${param.sort != null}"/>
+      <button type="submit" class="btn-search">Search</button>
+    </form>
+
+    <form th:action="@{/categories}" method="get" class="sort-form">
+      <input type="hidden" name="query" th:value="${query}" th:if="${query != null and !query.isEmpty()}"/>
+      <input type="hidden" name="size" th:value="${categoryPage.size}" th:if="${categoryPage != null}"/>
+      <select name="sort" class="sort-select" onchange="this.form.submit()">
+        <option value="name,asc" th:selected="${param.sort == null or #strings.toString(param.sort) == 'name,asc'}">By name (A-Z)</option>
+        <option value="name,desc" th:selected="${#strings.toString(param.sort) == 'name,desc'}">By name (Z-A)</option>
+        <option value="spent,desc" th:selected="${#strings.toString(param.sort) == 'spent,desc'}">By spent (High-Low)</option>
+        <option value="spent,asc" th:selected="${#strings.toString(param.sort) == 'spent,asc'}">By spent (Low-High)</option>
+      </select>
+    </form>
+
+    <a th:href="@{/home}" class="button button-secondary">
+      Home
+    </a>
   </div>
 
   <div class="categories-list">
 
+    <div th:if="${#lists.isEmpty(categories)}" class="no-categories-message" style="text-align: center; padding: 20px;">
+      <p>No categories found.</p>
+    </div>
+
     <div class="category-row" th:each="item : ${categories}">
       <div class="category-info">
-        <span class="category-title" th:text="${item.name}">Name</span>
-        <span class="category-spent" th:text="${#numbers.formatDecimal(item.spent, 1, 2)} + ' ₴'">Spent</span>
-      </div>
+        <span class="category-title" th:text="${item.name}">Category</span>
 
+        <span class="category-spent" th:text="${#numbers.formatDecimal(item.spent != null ? item.spent : 0, 1, 2)} + ' ₴'">0.00 ₴</span>
+      </div>
       <div class="btn-wrapper">
-        <a href="/view-category-expenses" th:href="@{/view-category-expenses(categoryId=${item.id})}" class="button">
+        <a th:href="@{/view-category-expenses(categoryId=${item.id})}" class="button">
           View Expenses
         </a>
       </div>
     </div>
-
   </div>
 
   <div class="pagination-container" th:if="${categoryPage != null and categoryPage.totalPages > 1}">
     <ul class="pagination">
+      <!-- Кнопка "Назад" -->
       <li th:class="${categoryPage.hasPrevious()} ? '' : 'disabled'">
-        <a th:href="@{/categories(page=${categoryPage.number - 1}, size=${categoryPage.size})}">&laquo; Previous</a>
+        <a th:href="${categoryPage.hasPrevious()} ? @{/categories(page=${categoryPage.number-1}, size=${categoryPage.size}, query=${query}, sort=${param.sort})} : '#'">
+          &laquo; Previous
+        </a>
       </li>
 
-      <li th:each="pageIdx : ${#numbers.sequence(0, categoryPage.totalPages - 1)}"
+      <li th:each="pageIdx : ${#numbers.sequence(0, categoryPage.totalPages-1)}"
           th:class="${pageIdx == categoryPage.number} ? 'active' : ''">
-        <a th:href="@{/categories(page=${pageIdx}, size=${categoryPage.size})}" th:text="${pageIdx + 1}">1</a>
+        <a th:href="@{/categories(page=${pageIdx}, size=${categoryPage.size}, query=${query}, sort=${param.sort})}"
+           th:text="${pageIdx + 1}">
+          1
+        </a>
       </li>
 
       <li th:class="${categoryPage.hasNext()} ? '' : 'disabled'">
-        <a th:href="@{/categories(page=${categoryPage.number + 1}, size=${categoryPage.size})}">Next &raquo;</a>
+        <a th:href="${categoryPage.hasNext()} ? @{/categories(page=${categoryPage.number+1}, size=${categoryPage.size}, query=${query}, sort=${param.sort})} : '#'">
+          Next &raquo;
+        </a>
       </li>
     </ul>
   </div>

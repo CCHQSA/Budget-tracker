@@ -4,6 +4,7 @@ import com.cchqsa.budgetTracker.entity.Category;
 import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.repository.ExpenseRepository;
+import com.cchqsa.budgetTracker.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,12 @@ import java.util.List;
 public class ExpensesService {
 
     private final ExpenseRepository expenseRepository;
+    private final UserRepository userRepository;
 
-    public ExpensesService(ExpenseRepository expenseRepository) {
+    public ExpensesService(ExpenseRepository expenseRepository,
+                           UserRepository userRepository) {
         this.expenseRepository = expenseRepository;
+        this.userRepository = userRepository;
     }
 
     public Category getCategoryById(Long expenseId) {
@@ -49,5 +53,20 @@ public class ExpensesService {
 
     public List<Expense> findRecentExpenses(User user) {
         return expenseRepository.findTop3ByUserOrderByIdDesc(user);
+    }
+
+    public Page<Expense> search(Long userId,
+                                String query,
+                                Pageable pageable) {
+
+        if (query == null || query.isBlank()) {
+            return expenseRepository.findByUserId(userId, pageable);
+        }
+
+        return expenseRepository.findByUserIdAndTitleContainingIgnoreCase(
+                userId,
+                query,
+                pageable
+        );
     }
 }

@@ -10,6 +10,7 @@ import com.cchqsa.budgetTracker.service.ExpensesService;
 import com.cchqsa.budgetTracker.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -47,17 +49,47 @@ public class ExpenseController {
 
     @GetMapping("/expenses")
     public String expenses(@AuthenticationPrincipal UserDetails userDetails,
-                           @PageableDefault(size = 10, sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
+                           @RequestParam(defaultValue = "date-desc") String sort,
+                           @PageableDefault(size = 10) Pageable pageable,
                            Model model) {
+
         Optional<User> currentUser = userService.findByUsername(userDetails.getUsername());
+
         if (currentUser.isEmpty()) {
             return "redirect:/login";
         }
 
         User user = currentUser.get();
+
         Budget budget = budgetService.findBudget(user, YearMonth.now()).orElse(null);
+
         if (budget == null) {
             return "redirect:/budget/create";
+        }
+
+        if ("date-asc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("date").ascending());
+
+        } else if ("amount-asc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("amount").ascending());
+
+        } else if ("amount-desc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("amount").descending());
+
+        } else if ("title-asc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("title").ascending());
+
+        } else if ("title-desc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("title").descending());
+
+        } else {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("date").descending());
         }
 
         Page<Expense> expensePage = expensesService.findByUser(user, pageable);
@@ -65,12 +97,18 @@ public class ExpenseController {
         model.addAttribute("budget", budget);
         model.addAttribute("expensePage", expensePage);
         model.addAttribute("expenses", expensePage.getContent());
+        model.addAttribute("sort", sort);
+
         return "expenses";
     }
 
     @GetMapping("/expenses/add")
-    public String showAddExpenseForm(Model model) {
+    public String showAddExpenseForm(@AuthenticationPrincipal UserDetails userDetails,
+            Model model) {
+        User user = userService.findByUsername(userDetails.getUsername()).get();
         model.addAttribute("expense", new Expense());
+        List<Category> categories = categoryService.findByUser(user.getId());
+        model.addAttribute("categories", categories);
         return "add-expense";
     }
 
@@ -195,6 +233,54 @@ public class ExpenseController {
         model.addAttribute("expensePage", expensePage);
         model.addAttribute("expenses", expensePage.getContent());
         model.addAttribute("isAdminView", true);
+
+        return "expenses";
+    }
+
+
+    @GetMapping("/expenses/search")
+    public String search(@AuthenticationPrincipal UserDetails userDetails,
+                         @RequestParam(required = false) String query,
+                         @RequestParam(defaultValue = "date-desc") String sort,
+                         @PageableDefault(size = 10) Pageable pageable,
+                         Model model) {
+
+        User user = userService.findByUsername(userDetails.getUsername()).orElseThrow();
+
+        Budget budget = budgetService.findBudget(user, YearMonth.now()).orElse(null);
+
+        if ("date-asc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("date").ascending());
+
+        } else if ("amount-asc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("amount").ascending());
+
+        } else if ("amount-desc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("amount").descending());
+
+        } else if ("title-asc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("title").ascending());
+
+        } else if ("title-desc".equals(sort)) {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("title").descending());
+
+        } else {
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                    Sort.by("date").descending());
+        }
+
+        Page<Expense> expensePage = expensesService.search(user.getId(), query, pageable);
+
+        model.addAttribute("budget", budget);
+        model.addAttribute("expensePage", expensePage);
+        model.addAttribute("expenses", expensePage.getContent());
+        model.addAttribute("query", query);
+        model.addAttribute("sort", sort);
 
         return "expenses";
     }

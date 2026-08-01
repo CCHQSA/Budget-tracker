@@ -11,17 +11,89 @@
   <div class="page-header">
     <h2 class="page-title" th:if="${isAdminView}">User Expenses (Read Only)</h2>
     <h2 class="page-title" th:unless="${isAdminView}">All Expenses</h2>
+    <div class="toolbar">
+
+      <form th:action="@{/expenses/search}" method="get" class="search-form">
+
+        <input type="text"
+               name="query"
+               class="search-input"
+               placeholder="Search expenses..."
+               th:value="${query}">
+
+        <button type="submit" class="btn-search">
+          Search
+        </button>
+
+        <select name="sort"
+                class="sort-select"
+                onchange="this.form.submit()">
+
+          <option value="title-asc"
+                  th:selected="${sort == 'title-asc'}">
+            By name (A-Z)
+          </option>
+
+          <option value="title-desc"
+                  th:selected="${sort == 'title-desc'}">
+            By name (Z-A)
+          </option>
+
+          <option value="amount-desc"
+                  th:selected="${sort == 'amount-desc'}">
+            By amount (High-Low)
+          </option>
+
+          <option value="amount-asc"
+                  th:selected="${sort == 'amount-asc'}">
+            By amount (Low-High)
+          </option>
+
+          <option value="date-desc"
+                  th:selected="${sort == 'date-desc' || sort == null}">
+            By date (Newest)
+          </option>
+
+          <option value="date-asc"
+                  th:selected="${sort == 'date-asc'}">
+            By date (Oldest)
+          </option>
+
+        </select>
+
+      </form>
+
+    </div>
+
 
     <a th:if="${isAdminView}" th:href="@{/admin-page}" class="btn btn-secondary">Back</a>
     <a th:unless="${isAdminView}" th:href="@{/home}" class="btn btn-secondary">Back</a>
   </div>
 
   <div th:if="${#lists.isEmpty(expenses)}" class="empty-state">
-    <p>No expenses added yet.</p>
 
-    <div th:if="${isAdminView == null}" class="btn-wrapper" style="justify-content:center">
-      <a th:href="@{/expenses/add}" class="btn">Create expense</a>
+    <div th:if="${query != null and !query.isBlank()}">
+      <p>Expenses not found.</p>
+
+      <div class="btn-wrapper" style="justify-content:center">
+        <a th:href="@{/expenses}" class="btn">
+          Show all expenses
+        </a>
+      </div>
     </div>
+
+    <div th:unless="${query != null and !query.isBlank()}">
+      <p>No expenses added yet.</p>
+
+      <div th:if="${isAdminView == null}"
+           class="btn-wrapper"
+           style="justify-content:center">
+        <a th:href="@{/expenses/add}" class="btn">
+          Create expense
+        </a>
+      </div>
+    </div>
+
   </div>
 
   <div th:unless="${#lists.isEmpty(expenses)}">

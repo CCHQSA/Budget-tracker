@@ -6,7 +6,6 @@ import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.service.CategoryService;
 import com.cchqsa.budgetTracker.service.UserService;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,9 +32,9 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @Transactional
     @GetMapping("/categories")
     public String viewCategories(@AuthenticationPrincipal UserDetails userDetails,
+                                 @RequestParam(required = false) String query,
                                  @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                  Model model) {
         Optional<User> currentUser = userService.findByUsername(userDetails.getUsername());
@@ -44,23 +43,20 @@ public class CategoryController {
         }
 
         User user = currentUser.get();
+        Page<CategorySpentDto> categoriesWithSpentPage;
 
-        Page<Category> userCategoriesPage = categoryService.findByUserId(user.getId(), pageable);
-
-        Page<CategorySpentDto> categoriesWithSpentPage = userCategoriesPage.map(category -> {
-            BigDecimal totalSpent = category.getExpenses().stream()
-                    .map(Expense::getAmount)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            return new CategorySpentDto(category.getId(), category.getName(), totalSpent);
-        });
+        if (query != null && !query.trim().isEmpty()) {
+            categoriesWithSpentPage = categoryService.findCategoriesWithSpentByUserIdAndName(user.getId(), query.trim(), pageable);
+            model.addAttribute("query", query.trim());
+        } else {
+            categoriesWithSpentPage = categoryService.findCategoriesWithSpentByUserId(user.getId(), pageable);
+        }
 
         model.addAttribute("categoryPage", categoriesWithSpentPage);
         model.addAttribute("categories", categoriesWithSpentPage.getContent());
         return "categories";
     }
 
-    @Transactional
     @GetMapping("/view-category-expenses")
     public String viewCategoryExpenses(@AuthenticationPrincipal UserDetails userDetails,
                                        @RequestParam Long categoryId,

@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  <div class="pagination-container" th:if="${budgetPage != null and budgetPage.totalPages > 1}">
+  <div class="pagination-container" th:if="${budgetPage != null and budgetPage.totalPages > 1 and not #lists.isEmpty(budgets)}">
     <ul class="pagination">
       <li th:class="${budgetPage.hasPrevious()} ? '' : 'disabled'">
         <a th:href="@{/budgets(page=${budgetPage.number - 1}, size=${budgetPage.size})}">&laquo; Previous</a>

@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.Collections;
 import java.util.Optional;
 
 @Controller
@@ -77,8 +78,13 @@ public class BudgetController {
         User user = currentUser.get();
         Page<Budget> budgetPage = budgetService.getBudgetsByUser(user, pageable);
 
-        model.addAttribute("budgetPage", budgetPage);
-        model.addAttribute("budgets", budgetPage.getContent());
+        if (budgetPage == null) {
+            model.addAttribute("budgetPage", Page.empty());
+            model.addAttribute("budgets", Collections.emptyList());
+        } else {
+            model.addAttribute("budgetPage", budgetPage);
+            model.addAttribute("budgets", budgetPage.getContent());
+        }
         return "budgets";
     }
 
@@ -142,8 +148,7 @@ public class BudgetController {
         User user = userService.findByUsername(userDetails.getUsername()).get();
         Budget currBudget = budgetService.findByIdAndUser(id, user).get();
         currBudget.setLimitAmount(amount);
-
-        budgetService.saveBudget(currBudget);
+        budgetService.addOrUpdateBudget(user, currBudget.getMonth(), amount);
         return "redirect:/budgets";
     }
 }

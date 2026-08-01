@@ -18,6 +18,7 @@ import java.util.List;
 
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
+
     @Query("select coalesce(sum(e.amount), 0) from Expense e where e.budget = :budget")
     BigDecimal sumAmountByBudget(Budget budget);
 
@@ -44,4 +45,8 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     Page<Expense> findBudgetExpensesPageable(@Param("budgetId") Long budgetId, @Param("user") User user, Pageable pageable);
 
     List<Expense> findTop3ByUserOrderByIdDesc(User user);
+
+    Page<Expense> findByUserIdAndTitleContainingIgnoreCase(Long userId, String query, Pageable pageable);
+
+    Page<Expense> findByUserId(Long userId, Pageable pageable);
 }
