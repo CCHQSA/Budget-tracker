@@ -11,95 +11,53 @@
   <div class="page-header">
     <h2 class="page-title" th:if="${isAdminView}">User Expenses (Read Only)</h2>
     <h2 class="page-title" th:unless="${isAdminView}">All Expenses</h2>
+
     <div class="toolbar">
-
       <form th:action="@{/expenses/search}" method="get" class="search-form">
+        <div class="search-wrapper">
+          <input type="text" name="query" class="search-input" placeholder="Search expenses..." th:value="${query}" aria-label="Search expenses">
+          <button type="submit" class="btn-search" aria-label="Submit search">
+            <svg xmlns="http://w3.org" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
 
-        <input type="text"
-               name="query"
-               class="search-input"
-               placeholder="Search expenses..."
-               th:value="${query}">
-
-        <button type="submit" class="btn-search">
-          Search
-        </button>
-
-        <select name="sort"
-                class="sort-select"
-                onchange="this.form.submit()">
-
-          <option value="title-asc"
-                  th:selected="${sort == 'title-asc'}">
-            By name (A-Z)
-          </option>
-
-          <option value="title-desc"
-                  th:selected="${sort == 'title-desc'}">
-            By name (Z-A)
-          </option>
-
-          <option value="amount-desc"
-                  th:selected="${sort == 'amount-desc'}">
-            By amount (High-Low)
-          </option>
-
-          <option value="amount-asc"
-                  th:selected="${sort == 'amount-asc'}">
-            By amount (Low-High)
-          </option>
-
-          <option value="date-desc"
-                  th:selected="${sort == 'date-desc' || sort == null}">
-            By date (Newest)
-          </option>
-
-          <option value="date-asc"
-                  th:selected="${sort == 'date-asc'}">
-            By date (Oldest)
-          </option>
-
+        <select name="sort" class="sort-select" onchange="this.form.submit()">
+          <option value="title-asc" th:selected="${sort == 'title-asc'}">By name (A-Z)</option>
+          <option value="title-desc" th:selected="${sort == 'title-desc'}">By name (Z-A)</option>
+          <option value="amount-desc" th:selected="${sort == 'amount-desc'}">By amount (High-Low)</option>
+          <option value="amount-asc" th:selected="${sort == 'amount-asc'}">By amount (Low-High)</option>
+          <option value="date-desc" th:selected="${sort == 'date-desc' || sort == null}">By date (Newest)</option>
+          <option value="date-asc" th:selected="${sort == 'date-asc'}">By date (Oldest)</option>
         </select>
-
       </form>
-
     </div>
-
 
     <a th:if="${isAdminView}" th:href="@{/admin-page}" class="btn btn-secondary">Back</a>
     <a th:unless="${isAdminView}" th:href="@{/home}" class="btn btn-secondary">Back</a>
   </div>
 
   <div th:if="${#lists.isEmpty(expenses)}" class="empty-state">
-
     <div th:if="${query != null and !query.isBlank()}">
       <p>Expenses not found.</p>
-
       <div class="btn-wrapper" style="justify-content:center">
-        <a th:href="@{/expenses}" class="btn">
-          Show all expenses
-        </a>
+        <a th:href="@{/expenses}" class="btn">Show all expenses</a>
       </div>
     </div>
 
     <div th:unless="${query != null and !query.isBlank()}">
       <p>No expenses added yet.</p>
-
-      <div th:if="${isAdminView == null}"
-           class="btn-wrapper"
-           style="justify-content:center">
-        <a th:href="@{/expenses/add}" class="btn">
-          Create expense
-        </a>
+      <div th:if="${isAdminView == null}" class="btn-wrapper" style="justify-content:center">
+        <a th:href="@{/expenses/add}" class="btn">Create expense</a>
       </div>
     </div>
-
   </div>
 
   <div th:unless="${#lists.isEmpty(expenses)}">
     <div class="expenses-list">
       <div class="expense-row" th:each="expense : ${expenses}">
-
         <div class="expense-info">
           <span class="expense-title" th:text="${expense.title}">Title</span>
           <div class="expense-meta">
@@ -110,7 +68,6 @@
 
         <div class="expense-amount-wrapper">
           <span class="expense-amount" th:text="${expense.amount}">0.00</span>
-
           <th:block th:if="${isAdminView == null}">
             <a th:href="@{/expenses/edit/{id}(id=${expense.id})}" class="btn-edit">Edit</a>
             <form th:action="@{/delete-expense}" method="post" class="delete-form">
@@ -119,7 +76,6 @@
             </form>
           </th:block>
         </div>
-
       </div>
     </div>
 
@@ -129,13 +85,10 @@
           <a th:if="${isAdminView}" th:href="@{/user/budget/expenses(userId=${budget.user.id}, budgetId=${budget.id}, page=${expensePage.number - 1}, size=${expensePage.size})}">&laquo; Previous</a>
           <a th:unless="${isAdminView}" th:href="@{/expenses(page=${expensePage.number - 1}, size=${expensePage.size})}">&laquo; Previous</a>
         </li>
-
-        <li th:each="pageIdx : ${#numbers.sequence(0, expensePage.totalPages - 1)}"
-            th:class="${pageIdx == expensePage.number} ? 'active' : ''">
+        <li th:each="pageIdx : ${#numbers.sequence(0, expensePage.totalPages - 1)}" th:class="${pageIdx == expensePage.number} ? 'active' : ''">
           <a th:if="${isAdminView}" th:href="@{/user/budget/expenses(userId=${budget.user.id}, budgetId=${budget.id}, page=${pageIdx}, size=${expensePage.size})}" th:text="${pageIdx + 1}">1</a>
           <a th:unless="${isAdminView}" th:href="@{/expenses(page=${pageIdx}, size=${expensePage.size})}" th:text="${pageIdx + 1}">1</a>
         </li>
-
         <li th:class="${expensePage.hasNext()} ? '' : 'disabled'">
           <a th:if="${isAdminView}" th:href="@{/user/budget/expenses(userId=${budget.user.id}, budgetId=${budget.id}, page=${expensePage.number + 1}, size=${expensePage.size})}">Next &raquo;</a>
           <a th:unless="${isAdminView}" th:href="@{/expenses(page=${expensePage.number + 1}, size=${expensePage.size})}">Next &raquo;</a>
@@ -148,7 +101,6 @@
       <a th:href="@{/categories}" class="btn btn-secondary">View Categories</a>
     </div>
   </div>
-
 </div>
 </body>
 </html>
