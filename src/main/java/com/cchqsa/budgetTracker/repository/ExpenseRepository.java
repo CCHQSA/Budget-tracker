@@ -1,5 +1,6 @@
 package com.cchqsa.budgetTracker.repository;
 
+import com.cchqsa.budgetTracker.dto.CategorySpentDto;
 import com.cchqsa.budgetTracker.entity.Budget;
 import com.cchqsa.budgetTracker.entity.Category;
 import com.cchqsa.budgetTracker.entity.Expense;
@@ -14,7 +15,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
@@ -49,4 +52,46 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     Page<Expense> findByUserIdAndTitleContainingIgnoreCase(Long userId, String query, Pageable pageable);
 
     Page<Expense> findByUserId(Long userId, Pageable pageable);
+
+    @Query("""
+            SELECT AVG(e.amount)
+            FROM Expense e
+            WHERE e.user.id = :userId
+            """)
+    BigDecimal getAverageExpense(Long userId);
+
+    Optional<Expense> findTopByUserOrderByAmountDesc(User user);
+
+    List<Expense> findByUserAndDateBetween(
+            User user,
+            LocalDate start,
+            LocalDate end
+    );
+
+
+    @Query("""
+    SELECT new com.cchqsa.budgetTracker.dto.CategorySpentDto(
+        c.id,
+        c.name,
+        SUM(e.amount)
+    )
+    FROM Expense e
+    JOIN e.category c
+    WHERE e.user.id = :userId
+    GROUP BY c.id, c.name
+    ORDER BY SUM(e.amount) DESC
+    """)
+    List<CategorySpentDto> getTopCategories(Long userId);
+
+    List<Expense> findByUserIdAndDateBetween(
+            Long userId,
+            LocalDate start,
+            LocalDate end
+    );
+
+
+    @Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e " +
+            "WHERE e.budget.user.id = :userId AND e.date >= :startOfWeek")
+    BigDecimal sumExpensesSince(@Param("userId") Long userId, @Param("startOfWeek") LocalDate startOfWeek);
+
 }

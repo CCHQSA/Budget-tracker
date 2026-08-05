@@ -3,42 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Expense</title>
-
-  <link rel="stylesheet" th:href="@{~/css/edit-expense.css}" />
+  <title>Budget Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
 
-<div class="form-container">
-  <h2>Edit Expense</h2>
+<div class="layout">
 
-  <form th:action="@{/expenses/edit/{id}(id=${expense.id})}" th:object="${expense}" method="post">
+  <aside class="sidebar">
+    <div class="logo">Budget Tracker</div>
+    <nav>
+      <a th:href="@{/home}" class="active">Dashboard</a>
+      <a th:href="@{/expenses}">Expenses</a>
+      <a th:href="@{/categories}">Categories</a>
+      <a th:href="@{/budgets}">Budgets</a>
+      <a th:href="@{/budget/create}">New Budget</a>
+      <a th:if="${role == 'ROLE_ADMIN'}" th:href="@{/admin-page}" class="admin-btn">Admin Panel</a>
+    </nav>
+  </aside>
 
-    <input type="hidden" th:field="*{id}" />
+  <main class="content">
 
-    <div class="form-group">
-      <label for="title">Title</label>
-      <input type="text" id="title" th:field="*{title}" placeholder="Enter title" required />
+    <div class="header">
+      <div>
+        <h1>Welcome, <span th:text="${username}">Guest</span></h1>
+        <p>Your monthly budget overview</p>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="amount">Amount</label>
-      <input type="number" step="0.01" id="amount" th:field="*{amount}" placeholder="0.00" required />
+    <div th:if="${budget != null}">
+
+      <div class="cards">
+        <div class="card">
+          <h3>Current Month</h3>
+          <span th:text="${currentMonth}">July</span>
+        </div>
+        <div class="card budget">
+          <h3>Budget</h3>
+          <span>₴<span th:text="${budget}">0</span></span>
+        </div>
+        <div class="card spent">
+          <h3>Spent</h3>
+          <span>₴<span th:text="${spent}">0</span></span>
+        </div>
+        <div class="card remaining">
+          <h3>Remaining</h3>
+          <span>₴<span th:text="${remaining}">0</span></span>
+        </div>
+        <div class="card">
+          <h3>Total Expenses</h3>
+          <span th:text="${totalExpenses}">0</span>
+        </div>
+        <div class="card" th:if="${largestExpense != null}">
+          <h3>Largest expense:</h3>
+          <div style="font-size: 18px; font-weight: bold; margin-top: 4px; margin-bottom: 2px;" th:text="${largestExpense.title}">Laptop</div>
+          <div style="font-size: 22px; font-weight: bold; color: #dc2626;">
+            <span th:text="${#numbers.formatDecimal(largestExpense.amount, 1, 'COMMA', 0, 'POINT')}">18,000</span> UAH
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+
+        <div class="left-column">
+          <div class="progress-card">
+            <h2>Budget Usage</h2>
+            <div class="progress">
+              <div class="progress-fill" th:style="'width:' + (${spent} * 100 / ${budget}) + '%'"></div>
+            </div>
+          </div>
+
+          <div class="recent-card" th:if="${!recentExpenses.isEmpty()}">
+            <div class="recent-header">
+              <h2>Recent Expenses</h2>
+              <a th:href="@{/expenses}" class="view-all">View All</a>
+            </div>
+
+            <div class="expense-item" th:each="expense : ${recentExpenses}">
+              <div class="expense-left">
+                <div class="expense-title" th:text="${expense.title}">Coffee</div>
+                <div class="expense-category" th:text="${expense.category.name}">Food</div>
+              </div>
+              <div class="expense-right">
+                <div class="expense-amount">-₴<span th:text="${expense.amount}">100</span></div>
+                <div class="expense-date" th:text="${expense.date}">2026-07-31</div>
+              </div>
+            </div>
+
+            <div class="average" th:text="${averagePerDay}"></div>
+          </div>
+        </div>
+
+        <div class="right-column-empty"></div>
+
+      </div>
+
     </div>
 
-    <div class="form-group">
-      <label for="date">Date</label>
-      <input type="date"
-             id="date"
-             name="date"
-             th:value="${expense.date}"
-             required />
+    <div class="empty" th:unless="${budget != null}">
+      <h2>No Budget Found</h2>
+      <p>Create a budget for the current month to start tracking expenses.</p>
+      <a th:href="@{/budget/create}" class="primary-btn">Create Budget</a>
     </div>
 
+  </main>
 
-    <button type="submit" class="btn-submit">Update Expense</button>
-    <a href="/expenses" class="cancel-link">Cancel</a>
-  </form>
 </div>
 
 </body>

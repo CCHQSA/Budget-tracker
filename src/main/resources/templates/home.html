@@ -4,16 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Budget Dashboard</title>
-
   <link rel="stylesheet" th:href="@{/css/home.css}">
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="layout">
 
   <aside class="sidebar">
-    <div class="logo">Budget Tracker</div>
-
+    <div class="logo">
+      <div class="logo-icon"></div>
+      <span>Budget Tracker</span>
+    </div>
     <nav>
       <a th:href="@{/home}" class="active">Dashboard</a>
       <a th:href="@{/expenses}">Expenses</a>
@@ -36,86 +40,119 @@
     <div th:if="${budget != null}">
 
       <div class="cards">
-
-        <div class="card">
+        <div class="card month-card">
           <h3>Current Month</h3>
-          <span th:text="${currentMonth}">July</span>
+          <span class="card-val" th:text="${currentMonth}">2026-08</span>
         </div>
-
         <div class="card budget">
-          <h3>Budget</h3>
-          <span>₴<span th:text="${budget}">0</span></span>
+          <h3>Budget Limit</h3>
+          <span class="card-val">₴ <span th:text="${#numbers.formatDecimal(budget, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
         </div>
-
         <div class="card spent">
-          <h3>Spent</h3>
-          <span>₴<span th:text="${spent}">0</span></span>
+          <h3>Total Spent</h3>
+          <span class="card-val">₴ <span th:text="${#numbers.formatDecimal(spent, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
         </div>
-
         <div class="card remaining">
-          <h3>Remaining</h3>
-          <span>₴<span th:text="${remaining}">0</span></span>
+          <h3>Remaining Balance</h3>
+          <span class="card-val">₴ <span th:text="${#numbers.formatDecimal(remaining, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
         </div>
-
-        <div class="card">
-          <h3>Total Expenses</h3>
-          <span th:text="${totalExpenses}">0</span>
+        <div class="card count-card">
+          <h3>Transactions</h3>
+          <span class="card-val" th:text="${totalExpenses}">0</span>
         </div>
-
       </div>
 
-      <div class="progress-card">
+      <div class="dashboard-grid">
 
-        <h2>Budget Usage</h2>
+        <div class="left-column">
+          <div class="progress-card">
+            <h2>Budget Analytics</h2>
+            <div class="progress">
+              <div class="progress-fill" th:style="'width:' + (${spent} * 100 / ${budget}) + '%'"></div>
+            </div>
 
-        <div class="progress">
-          <div class="progress-fill"
-               th:style="'width:' + (${spent} * 100 / ${budget}) + '%'">
+            <div class="day-limit-banner" th:if="${perDayLeft != null}">
+              <span class="day-limit-text">Available Daily Allowance</span>
+              <span class="day-limit-value">
+                ₴ <span th:text="${#numbers.formatDecimal(perDayLeft, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="recent-card" th:if="${!recentExpenses.isEmpty()}">
+            <div class="recent-header">
+              <h2>Recent Activity</h2>
+              <a th:href="@{/expenses}" class="view-all">View All</a>
+            </div>
+
+            <div class="expense-list">
+              <div class="expense-item" th:each="expense : ${recentExpenses}">
+                <div class="expense-left">
+                  <div class="expense-title" th:text="${expense.title}">Coffee</div>
+                  <div class="expense-category" th:text="${expense.category.name}">Food</div>
+                </div>
+                <div class="expense-right">
+                  <div class="expense-amount">-₴ <span th:text="${#numbers.formatDecimal(expense.amount, 1, 'NONE', 2, 'POINT')}">100.00</span></div>
+                  <div class="expense-date" th:text="${expense.date}">2026-07-31</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="average-footer">
+              <span>Daily Transaction Average:</span>
+              <span class="avg-val" th:text="'₴ ' + ${#numbers.formatDecimal(averagePerDay, 1, 'NONE', 2, 'POINT')}">0.00</span>
+            </div>
           </div>
         </div>
 
-      </div>
-
-      <div class="recent-card" th:if="${!recentExpenses.isEmpty()}">
-
-        <div class="recent-header">
-          <h2>Recent Expenses</h2>
-
-          <a th:href="@{/expenses}" class="view-all">
-            View All
-          </a>
-        </div>
-
-        <div class="expense-item"
-             th:each="expense : ${recentExpenses}">
-
-          <div class="expense-left">
-
-            <div class="expense-title"
-                 th:text="${expense.title}">
-              Coffee
+        <div class="right-column">
+          <div class="banner-card banner-red" th:if="${largestExpense != null}">
+            <div class="banner-info">
+              <h3 class="banner-title text-red">Largest Expense</h3>
+              <div class="banner-subtitle" th:text="${largestExpense.title}">Laptop</div>
             </div>
-
-            <div class="expense-category"
-                 th:text="${expense.category.name}">
-              Food
+            <div class="banner-right">
+              <div class="banner-amount text-red">
+                ₴ <span th:text="${#numbers.formatDecimal(largestExpense.amount, 1, 'COMMA', 0, 'POINT')}">18,000</span>
+              </div>
             </div>
-
           </div>
 
-          <div class="expense-right">
-
-            <div class="expense-amount">
-              -₴<span th:text="${expense.amount}">100</span>
+          <div class="banner-card banner-indigo" th:if="${topCategory != null}">
+            <div class="banner-info">
+              <h3 class="banner-title text-indigo">Top Spending Category</h3>
+              <div class="banner-subtitle" th:text="${topCategory.name}">Food</div>
             </div>
-
-            <div class="expense-date"
-                 th:text="${expense.date}">
-              2026-07-31
+            <div class="banner-right">
+              <div class="banner-amount text-indigo">
+                ₴ <span th:text="${#numbers.formatDecimal(topCategory.spent, 1, 'COMMA', 0, 'POINT')}">12,500</span>
+              </div>
             </div>
-
           </div>
 
+          <div class="banner-card banner-blue" th:if="${expensesThisWeekSpent != null}">
+            <div class="banner-info">
+              <h3 class="banner-title text-blue">Spent This Week</h3>
+              <div class="banner-subtitle">Rolling 7 Days</div>
+            </div>
+            <div class="banner-right">
+              <div class="banner-amount text-blue">
+                ₴ <span th:text="${#numbers.formatDecimal(expensesThisWeekSpent, 1, 'COMMA', 0, 'POINT')}">3,200</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="banner-card banner-green" th:if="${avgExpenseSpent != null}">
+            <div class="banner-info">
+              <h3 class="banner-title text-green">Average Transaction</h3>
+              <div class="banner-subtitle">Per Transaction</div>
+            </div>
+            <div class="banner-right">
+              <div class="banner-amount text-green">
+                ₴ <span th:text="${#numbers.formatDecimal(avgExpenseSpent, 1, 'COMMA', 0, 'POINT')}">500</span>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -123,17 +160,10 @@
     </div>
 
     <div class="empty" th:unless="${budget != null}">
-
-      <h2>No Budget Found</h2>
-
-      <p>
-        Create a budget for the current month to start tracking expenses.
-      </p>
-
-      <a th:href="@{/budget/create}" class="primary-btn">
-        Create Budget
-      </a>
-
+      <div class="empty-icon">✕</div>
+      <h2>No Active Budget Found</h2>
+      <p>Configure a timeline budget matrix for the current month window to safely begin auditing live operations.</p>
+      <a th:href="@{/budget/create}" class="primary-btn">Initialize Budget Matrix</a>
     </div>
 
   </main>

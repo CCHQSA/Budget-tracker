@@ -1,7 +1,10 @@
 package com.cchqsa.budgetTracker.controller;
 
+import com.cchqsa.budgetTracker.dto.CategorySpentDto;
+import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.service.BudgetService;
+import com.cchqsa.budgetTracker.service.CategoryService;
 import com.cchqsa.budgetTracker.service.ExpensesService;
 import com.cchqsa.budgetTracker.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,13 +23,15 @@ public class HomeController {
     private final UserService userService;
     private final BudgetService budgetService;
     private final ExpensesService expensesService;
+    private final CategoryService categoryService;
 
     public HomeController(UserService userService,
                           BudgetService budgetService,
-                          ExpensesService expensesService) {
+                          ExpensesService expensesService, CategoryService categoryService) {
         this.userService = userService;
         this.budgetService = budgetService;
         this.expensesService = expensesService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/home")
@@ -53,15 +58,31 @@ public class HomeController {
 
             BigDecimal spent = budgetService.getSpent(budget);
 
+            BigDecimal average = expensesService.getAverageExpense(user.getId());
+
+            Expense largestExpense = expensesService.getMostExpensiveExpense(user);
+
+            CategorySpentDto topCategory = categoryService.mostSpentCategory(user);
+
+            BigDecimal avgExpenseSpent = expensesService.getAverageExpense(user.getId());
+
+            BigDecimal expensesThisWeekSpent = expensesService.getThisWeekSpent(user.getId());
+
+            BigDecimal perDayLeft = budgetService.leftPerDay(user);
+
             model.addAttribute("budgetId", budget.getId());
             model.addAttribute("currentMonth", budget.getMonth());
             model.addAttribute("budget", budget.getLimitAmount());
             model.addAttribute("spent", spent);
-            model.addAttribute("remaining",
-                    budget.getLimitAmount().subtract(spent));
-            model.addAttribute("totalExpenses",
-                    budgetService.getTotalExpenses(budget));
+            model.addAttribute("remaining", budget.getLimitAmount().subtract(spent));
+            model.addAttribute("totalExpenses", budgetService.getTotalExpenses(budget));
             model.addAttribute("role", user.getRole().name());
+            model.addAttribute("averagePerDay", average);
+            model.addAttribute("largestExpense", largestExpense);
+            model.addAttribute("topCategory", topCategory);
+            model.addAttribute("avgExpenseSpent", avgExpenseSpent);
+            model.addAttribute("expensesThisWeekSpent", expensesThisWeekSpent);
+            model.addAttribute("perDayLeft", perDayLeft);
         });
 
         return "home";

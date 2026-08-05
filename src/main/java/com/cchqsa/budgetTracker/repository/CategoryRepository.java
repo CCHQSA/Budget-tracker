@@ -38,4 +38,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "WHERE c.user.id = :userId AND LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "GROUP BY c.id, c.name")
     Page<CategorySpentDto> findCategoriesWithSpentByUserIdAndName(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
+
 }

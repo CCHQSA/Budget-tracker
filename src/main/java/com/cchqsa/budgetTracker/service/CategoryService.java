@@ -2,6 +2,7 @@ package com.cchqsa.budgetTracker.service;
 
 import com.cchqsa.budgetTracker.dto.CategorySpentDto;
 import com.cchqsa.budgetTracker.entity.Category;
+import com.cchqsa.budgetTracker.entity.Expense;
 import com.cchqsa.budgetTracker.entity.User;
 import com.cchqsa.budgetTracker.repository.CategoryRepository;
 import com.cchqsa.budgetTracker.repository.UserRepository;
@@ -10,7 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -71,5 +75,27 @@ public class CategoryService {
     public Page<CategorySpentDto> findCategoriesWithSpentByUserIdAndName(Long id, String query, Pageable pageable) {
         return categoryRepository.findCategoriesWithSpentByUserIdAndName(id, query, pageable);
     }
+
+    @Transactional
+    public CategorySpentDto mostSpentCategory(User user) {
+        List<Category> categories = user.getCategories();
+
+        if (categories == null || categories.isEmpty()) {
+            return null;
+        }
+
+        return categories.stream()
+                .map(category -> {
+                    BigDecimal total = category.getExpenses().stream()
+                            .map(Expense::getAmount)
+                            .filter(Objects::nonNull)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    return new CategorySpentDto(category.getId(), category.getName(), total);
+                })
+                .max(Comparator.comparing(CategorySpentDto::getSpent))
+                .orElse(null);
+    }
+
+
 
 }

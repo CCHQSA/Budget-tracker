@@ -10,7 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -83,4 +86,29 @@ public class BudgetService {
     public Page<Expense> findExpensesByIdAndUser(Long budgetId, User user, Pageable pageable) {
         return expenseRepository.findBudgetExpensesPageable(budgetId, user, pageable);
     }
+
+
+    public BigDecimal leftPerDay(User user) {
+    Optional<Budget> budgetOpt = budgetRepository.findFirstByUserAndMonthOrderByIdDesc(user, YearMonth.now());
+        if (budgetOpt.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        Budget currBudget = budgetOpt.get();
+
+        BigDecimal spent = expenseRepository.sumAmountByBudget(currBudget);
+        if (spent == null) {
+            spent = BigDecimal.ZERO;
+        }
+
+        BigDecimal leftMoney = currBudget.getLimitAmount().subtract(spent);
+        if (leftMoney.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+        LocalDate today = LocalDate.now();
+        int totalDaysInMonth = today.lengthOfMonth();
+        int daysLeft = totalDaysInMonth - today.getDayOfMonth() + 1;
+
+        return leftMoney.divide(BigDecimal.valueOf(daysLeft), 2, RoundingMode.HALF_UP);
+    }
+
 }
