@@ -25,9 +25,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -284,5 +286,56 @@ public class ExpenseController {
 
         return "expenses";
     }
+
+    @GetMapping("/expenses/month")
+    public String getExpensesByMonth(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(value = "month", required = false) String monthStr,
+            @RequestParam(value = "sort", required = false, defaultValue = "date-desc") String sortParam,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "query", required = false) String query,
+            Model model) {
+
+        User user = userService.findByUsername(userDetails.getUsername()).orElseThrow();
+
+        YearMonth targetMonth;
+        if (monthStr != null && !monthStr.isBlank()) {
+            targetMonth = YearMonth.parse(monthStr);
+        } else {
+            targetMonth = YearMonth.now();
+        }
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "date");
+        if ("date-asc".equals(sortParam)) {
+            sort = Sort.by(Sort.Direction.ASC, "date");
+        } else if ("amount-desc".equals(sortParam)) {
+            sort = Sort.by(Sort.Direction.DESC, "amount");
+        } else if ("amount-asc".equals(sortParam)) {
+            sort = Sort.by(Sort.Direction.ASC, "amount");
+        } else if ("title-asc".equals(sortParam)) {
+            sort = Sort.by(Sort.Direction.ASC, "title");
+        } else if ("title-desc".equals(sortParam)) {
+            sort = Sort.by(Sort.Direction.DESC, "title");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Expense> expensePage;
+
+        if (query != null && !query.isBlank()) {
+            expensePage = expensesService.searchExpensesByMonth(user, targetMonth, query, pageable);
+        } else {
+            expensePage = expensesService.searchExpensesByMonth(user, targetMonth, query, pageable);
+        }
+        model.addAttribute("expenses", expensePage.getContent());
+        model.addAttribute("expensePage", expensePage);
+        model.addAttribute("selectedMonth", targetMonth.toString());
+        model.addAttribute("sort", sortParam);
+        model.addAttribute("isAdminView", null);
+
+        return "expenses";
+    }
+
 
 }

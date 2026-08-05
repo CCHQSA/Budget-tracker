@@ -88,14 +88,20 @@ public class ExpensesService {
                 .orElse(null);
     }
 
-    public List<Expense> getExpensesByMonth(
-            User user,
-            YearMonth month) {
+    public Page<Expense> searchExpensesByMonth(User user,
+                                               YearMonth month,
+                                               String query,
+                                               Pageable pageable) {
 
-        return expenseRepository.findByUserAndDateBetween(
+        LocalDate start = month.atDay(1);
+        LocalDate end = month.atEndOfMonth();
+
+        return expenseRepository.findByUserAndDateBetweenAndTitleContainingIgnoreCase(
                 user,
-                month.atDay(1),
-                month.atEndOfMonth()
+                start,
+                end,
+                query,
+                pageable
         );
     }
 

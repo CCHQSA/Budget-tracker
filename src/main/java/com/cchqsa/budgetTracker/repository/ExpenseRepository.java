@@ -62,10 +62,11 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     Optional<Expense> findTopByUserOrderByAmountDesc(User user);
 
-    List<Expense> findByUserAndDateBetween(
+    Page<Expense> findByUserAndDateBetween(
             User user,
             LocalDate start,
-            LocalDate end
+            LocalDate end,
+            Pageable pageable
     );
 
 
@@ -94,4 +95,11 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             "WHERE e.budget.user.id = :userId AND e.date >= :startOfWeek")
     BigDecimal sumExpensesSince(@Param("userId") Long userId, @Param("startOfWeek") LocalDate startOfWeek);
 
+    Page<Expense> findByUserAndDateBetweenAndTitleContainingIgnoreCase(
+            User user,
+            LocalDate start,
+            LocalDate end,
+            String title,
+            Pageable pageable
+    );
 }

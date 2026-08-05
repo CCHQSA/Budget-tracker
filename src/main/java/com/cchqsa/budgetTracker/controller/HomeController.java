@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -54,6 +55,8 @@ public class HomeController {
 
         YearMonth currentMonth = YearMonth.now();
 
+
+
         budgetService.findBudget(user, currentMonth).ifPresent(budget -> {
 
             BigDecimal spent = budgetService.getSpent(budget);
@@ -70,6 +73,8 @@ public class HomeController {
 
             BigDecimal perDayLeft = budgetService.leftPerDay(user);
 
+            List<CategorySpentDto> topCategories = expensesService.getTopCategories(user.getId());
+
             model.addAttribute("budgetId", budget.getId());
             model.addAttribute("currentMonth", budget.getMonth());
             model.addAttribute("budget", budget.getLimitAmount());
@@ -83,6 +88,7 @@ public class HomeController {
             model.addAttribute("avgExpenseSpent", avgExpenseSpent);
             model.addAttribute("expensesThisWeekSpent", expensesThisWeekSpent);
             model.addAttribute("perDayLeft", perDayLeft);
+            model.addAttribute("topCategories", topCategories);
         });
 
         return "home";
